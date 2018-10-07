@@ -41,9 +41,9 @@ def Browser(headers = [], debug = False, robots = True, redirect = True, referer
 
 # Example (rememer to change the Proxy Settings of the machine to 127.0.0.1:1609)
 #
-# def fnClientCallback(self, data): return data
+# def fnCallback(self, data): return data
 #
-# proxier = Network.Proxier(("127.0.0.1", 1609), ("viclab.biz", 80), (fnClientCallback, None))
+# proxier = Network.Proxier(("127.0.0.1", 1609), ("viclab.biz", 80), (fnCallback, fnCallback))
 # proxier.start()
 
 import socket
@@ -57,21 +57,23 @@ PROXY_DEFAULT_BUFFER_SIZE = 5*1024 # 5KB
 
 class ProxierClient(Thread):
 
-    def __init__(self, host, port, fn_callback):
+    def __init__(self, host, port, fn_callback, debug = False):
         super(ProxierClient, self).__init__()
+
         self.server = None
 
         self.port = port
         self.host = host
-
         self.fn_callback = fn_callback
+
+        self.debug = debug
 
         server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         server.bind((host, port))
         server.listen(PROXY_DEFAULT_NUM_CLIENTS)
 
-        self.client, addr = server.accept()
+        self.client = server.accept()[0]
 
         return
 
@@ -86,21 +88,22 @@ class ProxierClient(Thread):
 
                 self.server.sendall(data)
             except Exception as e:
-                print "[EXCEPTION] Occurred in %s: %s" % (self.__class__, str(e))
+                if self.debug: print("[EXCEPTION] Occurred in %s: %s" % (self.__class__, str(e)))
                 break
         return
 
 class ProxierServer(Thread):
 
-    def __init__(self, host, port, fn_callback):
+    def __init__(self, host, port, fn_callback, debug = False):
         super(ProxierServer, self).__init__()
 
         self.client = None
 
         self.port = port
         self.host = host
-
         self.fn_callback = fn_callback
+
+        self.debug = debug
 
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.connect((host, port))
@@ -118,13 +121,17 @@ class ProxierServer(Thread):
 
                 self.client.sendall(data)
             except Exception as e:
-                print "[EXCEPTION] Occurred in %s: %s" % (self.__class__, str(e))
+                if self.debug: print("[EXCEPTION] Occurred in %s: %s" % (self.__class__, str(e)))
                 break
         return
 
 class Proxier(Thread):
 
-    def __init__(self, local, server, callback = (fnDefaultCallback, fnDefaultCallback)):
+    def __init__(self,
+        local,
+        server,
+        callback = (fnDefaultCallback, fnDefaultCallback),
+        debug = False):
 
         super(Proxier, self).__init__()
 
@@ -145,12 +152,25 @@ class Proxier(Thread):
 
         self.is_running = False
 
+        self.debug = debug
+
         return
 
     def run(self):
         while True:
-            self.proxier_client = ProxierClient(self.from_host, self.from_port, self.fn_client_callback)
-            self.proxier_server = ProxierServer(self.to_host, self.to_port, self.fn_server_callback)
+            self.proxier_client = ProxierClient(
+                self.from_host,
+                self.from_port,
+                self.fn_client_callback,
+                self.debug
+            )
+
+            self.proxier_server = ProxierServer(
+                self.to_host,
+                self.to_port,
+                self.fn_server_callback,
+                self.debug
+            )
 
             self.proxier_client.start()
             self.proxier_server.start()

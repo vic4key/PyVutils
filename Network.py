@@ -36,3 +36,129 @@ def Browser(headers = [], debug = False, robots = True, redirect = True, referer
     pass
 
     return browser
+
+# Proxy Server
+
+# Example (rememer to change the Proxy Settings of the machine to 127.0.0.1:1609)
+#
+# def fnClientCallback(self, data): return data
+#
+# proxier = Network.Proxier(("127.0.0.1", 1609), ("viclab.biz", 80), (fnClientCallback, None))
+# proxier.start()
+
+import socket
+from threading import Thread
+
+def fnDefaultCallback(instance, data):
+    return data
+
+PROXY_DEFAULT_NUM_CLIENTS = 100
+PROXY_DEFAULT_BUFFER_SIZE = 5*1024 # 5KB
+
+class ProxierClient(Thread):
+
+    def __init__(self, host, port, fn_callback):
+        super(ProxierClient, self).__init__()
+        self.server = None
+
+        self.port = port
+        self.host = host
+
+        self.fn_callback = fn_callback
+
+        server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        server.bind((host, port))
+        server.listen(PROXY_DEFAULT_NUM_CLIENTS)
+
+        self.client, addr = server.accept()
+
+        return
+
+    def run(self):
+        while True:
+            if self.server == None or self.client == None: continue
+            try:
+                data = self.client.recv(PROXY_DEFAULT_BUFFER_SIZE)
+                if data == None or len(data) == 0: continue
+
+                data = self.fn_callback(self, data)
+
+                self.server.sendall(data)
+            except Exception as e:
+                print "[EXCEPTION] Occurred in %s: %s" % (self.__class__, str(e))
+                break
+        return
+
+class ProxierServer(Thread):
+
+    def __init__(self, host, port, fn_callback):
+        super(ProxierServer, self).__init__()
+
+        self.client = None
+
+        self.port = port
+        self.host = host
+
+        self.fn_callback = fn_callback
+
+        self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.server.connect((host, port))
+
+        return
+
+    def run(self):
+        while True:
+            if self.server == None or self.client == None: continue
+            try:
+                data = self.server.recv(PROXY_DEFAULT_BUFFER_SIZE)
+                if data == None or len(data) == 0: continue
+
+                data = self.fn_callback(self, data)
+
+                self.client.sendall(data)
+            except Exception as e:
+                print "[EXCEPTION] Occurred in %s: %s" % (self.__class__, str(e))
+                break
+        return
+
+class Proxier(Thread):
+
+    def __init__(self, local, server, callback = (fnDefaultCallback, fnDefaultCallback)):
+
+        super(Proxier, self).__init__()
+
+        from_host, from_port = local
+        to_host, to_port = server
+        fn_client_callback, fn_server_callback = callback
+
+        if fn_client_callback == None: fn_client_callback = fnDefaultCallback
+        if fn_server_callback == None: fn_server_callback = fnDefaultCallback
+
+        self.from_host = from_host
+        self.from_port = from_port
+        self.fn_client_callback = fn_client_callback
+
+        self.to_host = to_host
+        self.to_port = to_port
+        self.fn_server_callback = fn_server_callback
+
+        self.is_running = False
+
+        return
+
+    def run(self):
+        while True:
+            self.proxier_client = ProxierClient(self.from_host, self.from_port, self.fn_client_callback)
+            self.proxier_server = ProxierServer(self.to_host, self.to_port, self.fn_server_callback)
+
+            self.proxier_client.start()
+            self.proxier_server.start()
+
+            self.proxier_client.server = self.proxier_server.server
+            self.proxier_server.client = self.proxier_client.client
+
+            self.is_running = True
+        pass
+
+        return

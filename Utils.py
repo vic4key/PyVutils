@@ -2,7 +2,7 @@
 
 # Vutils for Utils
 
-import ctypes
+import ctypes, re
 
 # ---
 
@@ -15,3 +15,9 @@ def ScreenSize() :
 def GetCenterWindowOnScreen(width, height) :
     w, h = ScreenSize()
     return int(w / 2) - int(width / 2), int(h / 2) - int(height / 2)
+
+def ReplaceExactWordOnly(text, old, new):
+    pattern  = r"(?<=[^\da-zA-z_])"
+    pattern += old
+    pattern += r"(?=[^\da-zA-z_])"
+    return re.sub(pattern, new, text)

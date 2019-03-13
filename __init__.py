@@ -18,7 +18,7 @@ __all__ = [
     "Network",
     "Crypto",
     "Math",
-    "Ocv",
+    "Cv",
     "Utils",
     "Others",
 ]

@@ -1,0 +1,4 @@
+imutils==0.5.2
+numpy==1.16.1
+opencv_python==4.0.0.21
+mechanize==0.4.0

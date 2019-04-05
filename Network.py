@@ -2,7 +2,12 @@
 
 # Vutils for Network
 
-import os, mechanize, cookielib
+import os, mechanize
+
+try:
+    import cookielib
+except ImportError:
+    import http.cookiejar as cookielib
 
 # ---
 

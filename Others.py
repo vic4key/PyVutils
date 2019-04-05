@@ -2,7 +2,7 @@
 
 # Vutils for Others
 
-import traceback
+import traceback, File
 
 # ---
 
@@ -36,7 +36,7 @@ def LogException(obj) :
                 fileName, lineNumber, funcName = info
                 print("%d. '%s' %s at %s : " % (
                     frameNumber,
-                    ExtractFileName(fileName.strip())[:-1],
+                    File.ExtractFileName(fileName.strip())[:-1],
                     funcName.strip(),
                     lineNumber.strip(),
                 ))

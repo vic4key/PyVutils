@@ -6,7 +6,7 @@
 @Name   : Vic Utility a.k.a Vutils
 '''''''''''''''''''''''''''''''''''
 
-__name__ = "Vutils"
+__name__ = "PyVutils"
 
 __version__ = "1.0.0"
 

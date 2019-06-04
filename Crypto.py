@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Vutils for Crypton
+# Vutils for Crypto
 
 import base64, hashlib
 

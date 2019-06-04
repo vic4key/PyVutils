@@ -163,12 +163,16 @@ class Proxier(Thread):
 
     def run(self):
         while True:
+            if self.debug : print("FROM (%s:%d)\n" % (self.from_host, self.from_port))
+
             self.proxier_client = ProxierClient(
                 self.from_host,
                 self.from_port,
                 self.fn_client_callback,
                 self.debug
             )
+
+            if self.debug : print("TO (%s:%d)\n" % (self.to_host, self.to_port))
 
             self.proxier_server = ProxierServer(
                 self.to_host,

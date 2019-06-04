@@ -2,7 +2,8 @@
 
 # Vutils for Others
 
-import traceback, File
+import traceback
+from . import File
 
 # ---
 
@@ -12,8 +13,6 @@ def LogException(obj) :
     print("")
     print(" Exception Infomation ".center(IDLE_WIDTH, "*"))
     print("")
-
-    result = ""
 
     frames = traceback.format_exc().split("\n")
 

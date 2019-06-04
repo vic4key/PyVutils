@@ -6,14 +6,14 @@ import os, stat
 
 # ---
 
-def ReadFile(file_path, mode = "rb"):
+def Read(file_path, mode = "rb"):
     file = open(file_path, mode)
     data = file.read()
     file.close()
     return data
 
 
-def WriteFile(file_path, data, mode = "wb"):
+def Write(file_path, data, mode = "wb"):
     file = open(file_path, mode)
     file.write(data)
     file.close()

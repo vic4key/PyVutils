@@ -12,14 +12,14 @@ IT_COLOR = cv2.IMREAD_COLOR
 IT_GRAY  = cv2.IMREAD_GRAYSCALE
 IT_UNCHANGED = cv2.IMREAD_UNCHANGED
 
-def LoadImage(filePath, type = IT_COLOR) :
+def Load(filePath, type = IT_COLOR) :
     return cv2.imread(filePath, IT_COLOR)
 
-def SaveImage(filePath, image) :
+def Save(filePath, image) :
     cv2.imwrite(filePath, image)
     return
 
-def DisplayImage(image, windowTitle = "Sample", forceExit = False) :
+def Display(image, windowTitle = "Sample", forceExit = False) :
     cv2.namedWindow(windowTitle, cv2.WINDOW_AUTOSIZE)
     cv2.imshow(windowTitle, image)
     cv2.waitKey(0)
@@ -27,7 +27,7 @@ def DisplayImage(image, windowTitle = "Sample", forceExit = False) :
     if forceExit : sys.exit(0)
     return
 
-def DisplayCapture(sourceType, fnCallback, windowTitle, *args) :
+def Capture(sourceType, fnCallback, windowTitle, *args) :
     vkSpace     = 0x20 # Space
     vkEscape    = 0x1B # Esc
     vkReturn    = 0x0D # Enter
@@ -55,7 +55,7 @@ def DisplayCapture(sourceType, fnCallback, windowTitle, *args) :
 
     return
 
-def DisplayCamera(fnCallback, windowTitle = "Sample", *args):
+def Camera(fnCallback, windowTitle = "Sample", *args):
 
     if type(fnCallback).__name__ != "function" or fnCallback.__code__.co_argcount != 1 :
         msg  = "fnCallback` argument must be a callback function"
@@ -63,11 +63,11 @@ def DisplayCamera(fnCallback, windowTitle = "Sample", *args):
         msg += "`Eg. Callback(frame, *args) -> frame"
         raise NameError(msg)
 
-    ocvDisplayCapture(cv2.CAP_ANY, fnCallback, windowTitle, args)
+    Capture(cv2.CAP_ANY, fnCallback, windowTitle, args)
 
     return
 
-def DisplayVideo(videoFilePath, fnCallback, windowTitle = "Sample", *args):
+def Video(videoFilePath, fnCallback, windowTitle = "Sample", *args):
 
     if type(fnCallback).__name__ != "function" or fnCallback.__code__.co_argcount != 1 :
         msg  = "fnCallback` argument must be a callback function"
@@ -75,7 +75,7 @@ def DisplayVideo(videoFilePath, fnCallback, windowTitle = "Sample", *args):
         msg += "`Eg. Callback(frame, *args) -> frame"
         raise NameError(msg)
 
-    ocvDisplayCapture(videoFilePath, fnCallback, windowTitle, args)
+    Capture(videoFilePath, fnCallback, windowTitle, args)
 
     return
 

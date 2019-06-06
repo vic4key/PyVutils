@@ -7,10 +7,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from . import File
 
-def Read(filePath):
+def Load(filePath):
     return pydicom.dcmread(filePath) 
 
-def ReadDirectory(directory, ext="DCM"):
+def Loadirectory(directory, ext="DCM"):
 
     pattern = File.Slash(directory)
     pattern += "*"
@@ -19,9 +19,9 @@ def ReadDirectory(directory, ext="DCM"):
         pattern += "."
         pattern += ext
 
-    return [Read(filePath) for filePath in glob.glob(pattern)]
+    return [Load(filePath) for filePath in glob.glob(pattern)]
 
-def Write(filePath, DS, likeOriginal = True):
+def Store(filePath, DS, likeOriginal = True):
     pydicom.filewriter.write_file(filePath, DS, likeOriginal)
     return
 

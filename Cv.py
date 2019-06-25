@@ -203,3 +203,36 @@ def FindContours(imageGray, mode = cv2.RETR_TREE, method = cv2.CHAIN_APPROX_SIMP
 def DrawContour(image, contour, color = (0, 255, 0), thickness = 1):
     cv2.drawContours(image, [contour], -1, color, thickness)
     return
+
+def ExtractFeature(rgbImage, vectorSize=32):
+    try:
+        # Using KAZE, cause SIFT, ORB and other was moved to additional module
+        # which is adding addtional pain during install
+        alg = cv2.KAZE_create()
+
+        # Dinding image keypoints
+        kps = alg.detect(rgbImage)
+
+        # Getting first 32 of them.
+        # Number of keypoints is varies depend on image size and color pallet
+        # Sorting them based on keypoint response value(bigger is better)
+        kps = sorted(kps, key=lambda x: -x.response)[:vectorSize]
+
+        # computing descriptors vector
+        kps, result = alg.compute(rgbImage, kps)
+
+        # Flatten all of them in one big vector - our feature vector
+        result = result.flatten()
+
+        # Making descriptor of same size
+        # Descriptor vector size is 64
+        needed_size = (vectorSize * 64)
+        if result.size < needed_size:
+            # if we have less the 32 descriptors then just adding zeros at the
+            # end of our feature vector
+            result = np.concatenate([result, np.zeros(needed_size - result.size)])
+    except cv2.error as e:
+        print("Error: ", e)
+        return None
+
+    return result

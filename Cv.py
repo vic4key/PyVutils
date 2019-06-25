@@ -108,6 +108,12 @@ def ToGray(bgrImage) :
 def ToHSV(bgrImage) :
     return cv2.cvtColor(bgrImage, cv2.COLOR_BGR2HSV)
 
+def Normalize(image):
+    return image / 255.0
+
+def Conv2D(image, kernel):
+    return cv2.filter2D(image, -1, kernel)
+
 # https://docs.opencv.org/3.4.0/da/d54/group__imgproc__transform.html#ga47a974309e9102f5f08231edc7e7529d
 def ScaleImageByRatio(image, scale, itplMethod = cv2.INTER_CUBIC) :
     return cv2.resize(image, None, fx = scale, fy = scale, interpolation = itplMethod)

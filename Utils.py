@@ -21,3 +21,11 @@ def ReplaceExactWordOnly(text, old, new):
     pattern += old
     pattern += r"(?=[^\da-zA-z_])"
     return re.sub(pattern, new, text)
+
+'''
+Eg. text   = "16x09.bin\nimage_07x02.bin"
+    regex  = r"([\d]+)x([\d]+)"
+    result = [('16', '09'), ('07', '02')]
+'''
+def RegEx(text, regex, flags = re.MULTILINE | re.IGNORECASE):
+    return re.findall(regex, text, flags)

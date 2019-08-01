@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 from . import File
 
 def Load(filePath):
-    return pydicom.dcmread(filePath) 
+    return pydicom.dcmread(filePath)
 
 def Loadirectory(directory, ext="DCM"):
 
@@ -31,9 +31,9 @@ def Save(filePath, DS):
 
 def View(obj):
 
-    theObjType = type(obj) 
+    theObjType = type(obj)
     if theObjType is str:
-        DS = Read(obj)
+        DS = Load(obj)
         plt.imshow(DS.pixel_array, cmap=plt.cm.bone)
         plt.show()
     elif theObjType is pydicom.dataset.FileDataset:

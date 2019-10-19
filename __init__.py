@@ -15,6 +15,8 @@ __author__ = 'Vic P. <vic4key@gmail.com>'
 __all__ = [
     "Bytes",
     "File",
+    "Thread",
+    "Process",
     "Network",
     "Crypto",
     "Math",

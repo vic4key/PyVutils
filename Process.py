@@ -56,7 +56,7 @@ class Pool:
 
             batch_args = listargs[start:stop]
 
-            if self._debug: print(f"\t\tProcess#i: {len(batch_args)} items")
+            if self._debug: print(f"\t\tProcess#{i + 1}: {len(batch_args)} items")
 
             process = Process(target=self._fn_batch, args=[fn, self._results, batch_args])
             self._processes.append(process)

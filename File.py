@@ -40,9 +40,10 @@ def IsFileExists(filePath): return os.path.isfile(filePath)
 
 def IsDirectoryExists(directory): return os.path.isdir(directory)
 
-def Slash(directory):
-    if directory[-1] != '\\' : directory += "\\"
-    return directory
+def NormalizePath(path, includedLastSlash = False):
+    s = path.replace("\\\\", os.path.sep).replace("\\", os.path.sep).replace("//", os.path.sep).replace("/", os.path.sep)
+    if includedLastSlash: s += os.path.sep
+    return s
 
 # ---
 

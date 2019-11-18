@@ -66,7 +66,7 @@ class proxy_client(Thread):
         super(proxy_client, self).__init__()
 
         self._debug = debug
-        if self._debug : print(f"[ctor] {self.__class__.__name__} => {hex(id(self))}")
+        if self._debug : print("[ctor] %s => %08x" % (self.__class__.__name__, id(self)))
 
         self._server = None
 
@@ -83,7 +83,7 @@ class proxy_client(Thread):
         return
 
     def __del__(self):
-        if self._debug : print(f"[dtor] {self.__class__.__name__} => {hex(id(self))}")
+        if self._debug : print("[dtor] %s => %08x" % (self.__class__.__name__, id(self)))
 
     def run(self):
         while True:
@@ -96,7 +96,7 @@ class proxy_client(Thread):
 
                 self._server.sendall(data)
             except Exception as e:
-                if self._debug: print(f"[exception] {self.__class__.__name__}: {str(e)}")
+                if self._debug: print("[exception] %s: %s" % (self.__class__.__name__, str(e)))
                 break
         return
 
@@ -106,7 +106,7 @@ class proxy_target(Thread):
         super(proxy_target, self).__init__()
 
         self._debug = debug
-        if self._debug : print(f"[ctor] {self.__class__.__name__} => {hex(id(self))}")
+        if self._debug : print("[ctor] %s => %08x" % (self.__class__.__name__, id(self)))
 
         self._client = None
 
@@ -119,7 +119,7 @@ class proxy_target(Thread):
         return
 
     def __del__(self):
-        if self._debug : print(f"[dtor] {self.__class__.__name__} => {hex(id(self))}")
+        if self._debug : print("[dtor] %s => %08x" % (self.__class__.__name__, id(self)))
 
     def run(self):
         while True:
@@ -132,7 +132,7 @@ class proxy_target(Thread):
 
                 self._client.sendall(data)
             except Exception as e:
-                if self._debug: print(f"[exception] {self.__class__.__name__}: {str(e)}")
+                if self._debug: print("[exception] %s: %s" % (self.__class__.__name__, str(e)))
                 break
         return
 
@@ -169,7 +169,8 @@ class Proxy(Thread):
         while True:
 
             if self._debug :
-                print(f"[proxy] {self._from_host}:{self._from_port} => {self._to_host}:{self._to_port}")
+                print("[proxy] %s:%d => %s:%d" % (
+                    self._from_host, self._from_port, self._to_host, self._to_port))
 
             self._proxy_client = proxy_client(
                 self._from_host,

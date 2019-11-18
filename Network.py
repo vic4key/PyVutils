@@ -44,150 +44,155 @@ def Browser(headers = [], debug = False, robots = True, redirect = True, referer
 
 # Proxy Server
 
-# Example (rememer to change the Proxy Settings of the machine to 127.0.0.1:1609)
+# Example: (remember to change the System/Browsers Proxy Settings of the machine to 127.0.0.1:1609)
 #
 # def fnCallback(self, data): return data
 #
-# proxier = Network.Proxier(("127.0.0.1", 1609), ("viclab.biz", 80), (fnCallback, fnCallback))
-# proxier.start()
+# proxy = Network.Proxy(proxy=("127.0.0.1", 1609), target=("vic.onl", 80), callback=(fnCallback, fnCallback), timeout=None, debug=True)
+# proxy.start()
 
 import socket
 from threading import Thread
 
 def fnDefaultCallback(instance, data):
+    print(data)
     return data
 
 PROXY_DEFAULT_NUM_CLIENTS = 100
-PROXY_DEFAULT_BUFFER_SIZE = 5*1024 # 5KB
+PROXY_DEFAULT_BUFFER_SIZE = 500*1024 # 500KB
 
-class ProxierClient(Thread):
+class proxy_client(Thread):
+    def __init__(self, host, port, fn_callback, timeout, debug = False):
+        super(proxy_client, self).__init__()
 
-    def __init__(self, host, port, fn_callback, debug = False):
-        super(ProxierClient, self).__init__()
+        self._debug = debug
+        if self._debug : print(f"[ctor] {self.__class__.__name__} => {hex(id(self))}")
 
-        self.server = None
+        self._server = None
 
-        self.port = port
-        self.host = host
-        self.fn_callback = fn_callback
-
-        self.debug = debug
+        self._fn_callback = fn_callback
 
         server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        # server.settimeout(timeout)
         server.bind((host, port))
         server.listen(PROXY_DEFAULT_NUM_CLIENTS)
 
-        self.client = server.accept()[0]
+        self._client = server.accept()[0]
 
         return
+
+    def __del__(self):
+        if self._debug : print(f"[dtor] {self.__class__.__name__} => {hex(id(self))}")
 
     def run(self):
         while True:
-            if self.server == None or self.client == None: continue
+            if self._server == None or self._client == None: break
             try:
-                data = self.client.recv(PROXY_DEFAULT_BUFFER_SIZE)
-                if data == None or len(data) == 0: continue
+                data = self._client.recv(PROXY_DEFAULT_BUFFER_SIZE)
+                if data == None or len(data) == 0: break
 
-                data = self.fn_callback(self, data)
+                data = self._fn_callback(self, data)
 
-                self.server.sendall(data)
+                self._server.sendall(data)
             except Exception as e:
-                if self.debug: print("[EXCEPTION] Occurred in %s: %s" % (self.__class__, str(e)))
+                if self._debug: print(f"[exception] {self.__class__.__name__}: {str(e)}")
                 break
         return
 
-class ProxierServer(Thread):
+class proxy_target(Thread):
 
-    def __init__(self, host, port, fn_callback, debug = False):
-        super(ProxierServer, self).__init__()
+    def __init__(self, host, port, fn_callback, timeout, debug = False):
+        super(proxy_target, self).__init__()
 
-        self.client = None
+        self._debug = debug
+        if self._debug : print(f"[ctor] {self.__class__.__name__} => {hex(id(self))}")
 
-        self.port = port
-        self.host = host
-        self.fn_callback = fn_callback
+        self._client = None
 
-        self.debug = debug
+        self._fn_callback = fn_callback
 
-        self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server.connect((host, port))
+        self._server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self._server.settimeout(timeout)
+        self._server.connect((host, port))
 
         return
+
+    def __del__(self):
+        if self._debug : print(f"[dtor] {self.__class__.__name__} => {hex(id(self))}")
 
     def run(self):
         while True:
-            if self.server == None or self.client == None: continue
+            if self._server == None or self._client == None: break
             try:
-                data = self.server.recv(PROXY_DEFAULT_BUFFER_SIZE)
-                if data == None or len(data) == 0: continue
+                data = self._server.recv(PROXY_DEFAULT_BUFFER_SIZE)
+                if data == None or len(data) == 0: break
 
-                data = self.fn_callback(self, data)
+                data = self._fn_callback(self, data)
 
-                self.client.sendall(data)
+                self._client.sendall(data)
             except Exception as e:
-                if self.debug: print("[EXCEPTION] Occurred in %s: %s" % (self.__class__, str(e)))
+                if self._debug: print(f"[exception] {self.__class__.__name__}: {str(e)}")
                 break
         return
 
-class Proxier(Thread):
+class Proxy(Thread):
 
     def __init__(self,
-        local,
-        server,
+        proxy,
+        target,
         callback = (fnDefaultCallback, fnDefaultCallback),
+        timeout = None,
         debug = False):
 
-        super(Proxier, self).__init__()
+        super(Proxy, self).__init__()
 
-        from_host, from_port = local
-        to_host, to_port = server
-        fn_client_callback, fn_server_callback = callback
+        self._fn_client_callback, self._fn_server_callback = callback
+        if self._fn_client_callback == None: self._fn_client_callback = fnDefaultCallback
+        if self._fn_server_callback == None: self._fn_server_callback = fnDefaultCallback
 
-        if fn_client_callback == None: fn_client_callback = fnDefaultCallback
-        if fn_server_callback == None: fn_server_callback = fnDefaultCallback
+        self._to_host, self._to_port = target
+        self._from_host, self._from_port = proxy
 
-        self.from_host = from_host
-        self.from_port = from_port
-        self.fn_client_callback = fn_client_callback
+        self._to_host = self._to_host.lower()
+        self._from_host = self._from_host.lower()
 
-        self.to_host = to_host
-        self.to_port = to_port
-        self.fn_server_callback = fn_server_callback
+        self._timeout = timeout
+        self._debug = debug
 
-        self.is_running = False
-
-        self.debug = debug
+        self._is_running = False
 
         return
 
     def run(self):
+
         while True:
-            if self.debug : print("FROM (%s:%d)\n" % (self.from_host, self.from_port))
 
-            self.proxier_client = ProxierClient(
-                self.from_host,
-                self.from_port,
-                self.fn_client_callback,
-                self.debug
+            if self._debug :
+                print(f"[proxy] {self._from_host}:{self._from_port} => {self._to_host}:{self._to_port}")
+
+            self._proxy_client = proxy_client(
+                self._from_host,
+                self._from_port,
+                self._fn_client_callback,
+                self._timeout,
+                self._debug
             )
 
-            if self.debug : print("TO (%s:%d)\n" % (self.to_host, self.to_port))
-
-            self.proxier_server = ProxierServer(
-                self.to_host,
-                self.to_port,
-                self.fn_server_callback,
-                self.debug
+            self._proxy_target = proxy_target(
+                self._to_host,
+                self._to_port,
+                self._fn_server_callback,
+                self._timeout,
+                self._debug
             )
 
-            self.proxier_client.start()
-            self.proxier_server.start()
+            self._proxy_client._server = self._proxy_target._server
+            self._proxy_target._client = self._proxy_client._client
 
-            self.proxier_client.server = self.proxier_server.server
-            self.proxier_server.client = self.proxier_client.client
+            self._proxy_target.start()
+            self._proxy_client.start()
 
-            self.is_running = True
-        pass
+            self._is_running = True
 
         return

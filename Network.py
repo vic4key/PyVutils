@@ -90,7 +90,7 @@ class proxy_client(Thread):
             if self._server == None or self._client == None: break
             try:
                 data = self._client.recv(PROXY_DEFAULT_BUFFER_SIZE)
-                if data == None or len(data) == 0: break
+                if not data: break
 
                 data = self._fn_callback(self, data)
 
@@ -126,7 +126,7 @@ class proxy_target(Thread):
             if self._server == None or self._client == None: break
             try:
                 data = self._server.recv(PROXY_DEFAULT_BUFFER_SIZE)
-                if data == None or len(data) == 0: break
+                if not data: break
 
                 data = self._fn_callback(self, data)
 

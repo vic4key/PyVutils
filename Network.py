@@ -44,19 +44,28 @@ def Browser(headers = [], debug = False, robots = True, redirect = True, referer
 
 # Proxy Server
 
-# Example: (remember to change the System/Browsers Proxy Settings of the machine to 127.0.0.1:1609)
+# # Example: (remember to change the System/Browsers Proxy Settings of the machine to 127.0.0.1:8080)
 #
-# def fnCallback(self, data): return data
+# from pprint import *
+# from email import message_from_string
 #
-# proxy = Network.Proxy(proxy=("127.0.0.1", 1609), target=("vic.onl", 80), callback=(fnCallback, fnCallback), timeout=None, debug=True)
+# def fnCallback(self, data):
+#     try:
+#         s = data.decode("ascii", "ignore")
+#         request, hdrs = s.split("\r\n", 1)
+#         headers = dict(message_from_string(hdrs).items())
+#         print(("[%s]" % request).center(120, "-"))
+#         pprint(headers,)
+#     except Exception as e: print("[exception]:", e)
+#     return data
+#
+# proxy = Network.Proxy(proxy=("127.0.0.1", 8080), target=("vic.onl", 80), callback=(fnCallback, fnCallback), timeout=None, debug=True)
 # proxy.start()
 
 import socket
 from threading import Thread
 
-def fnDefaultCallback(instance, data):
-    print(data)
-    return data
+def fnDefaultCallback(instance, data): return data
 
 PROXY_DEFAULT_NUM_CLIENTS = 100
 PROXY_DEFAULT_BUFFER_SIZE = 500*1024 # 500KB

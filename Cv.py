@@ -236,3 +236,6 @@ def ExtractFeature(rgbImage, vectorSize=32):
         return None
 
     return result
+
+def Invert(image):
+    return cv2.bitwise_not(image)

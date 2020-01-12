@@ -7,19 +7,19 @@ import numpy as np
 import matplotlib.pyplot as plt
 from . import File
 
-def Load(filePath):
-    return pydicom.dcmread(filePath)
+def Load(filePath, force=True):
+    return pydicom.dcmread(filePath, force=force)
 
-def Loadirectory(directory, ext="DCM"):
+def Loadirectory(directory, extension="DCM", force=True):
 
     pattern = File.Slash(directory)
     pattern += "*"
 
-    if len(ext) != 0:
+    if len(extension) != 0:
         pattern += "."
-        pattern += ext
+        pattern += extension
 
-    return [Load(filePath) for filePath in glob.glob(pattern)]
+    return [Load(filePath, force) for filePath in glob.glob(pattern)]
 
 def Store(filePath, DS, likeOriginal = True):
     pydicom.filewriter.write_file(filePath, DS, likeOriginal)

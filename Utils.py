@@ -28,4 +28,6 @@ Eg. text   = "16x09.bin\nimage_07x02.bin"
     result = [('16', '09'), ('07', '02')]
 '''
 def RegEx(text, regex, flags = re.MULTILINE | re.IGNORECASE):
-    return re.findall(regex, text, flags)
+    result = re.findall(regex, text, flags)
+    if len(result) == 1 and not type(result[0]) is tuple: result = [(result[0],)]
+    return result

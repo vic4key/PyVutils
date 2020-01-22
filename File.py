@@ -4,6 +4,8 @@
 
 import os, stat
 
+from . import Utils
+
 # ---
 
 def Read(file_path, mode = "rb"):
@@ -12,14 +14,13 @@ def Read(file_path, mode = "rb"):
     file.close()
     return data
 
-
 def Write(file_path, data, mode = "wb"):
     file = open(file_path, mode)
     file.write(data)
     file.close()
     return
 
-def WriteLog(filePath, text):
+def Log(filePath, text):
     file = open(filePath, "a+")
     file.write(text + "\n")
     file.close()
@@ -53,6 +54,8 @@ def NormalizePath(path, includedLastSlash = False):
 # def fnFSCallback(filePath, fileDirectory, fileName):
 #     print("`%s` - `%s` - `%s`" % (filePath, fileDirectory, fileName))
 #     return
+#
+# File.LSRecursive(R".", fnFSCallback, ["txt"])
 
 LSR_DEPTH_MAX = -1
 LSR_DEPTH_PARENT = 0
@@ -68,7 +71,7 @@ def LSRecursive(directory, fnCallback, extensions = [], depth = LSR_DEPTH_MAX):
     LSR_DEPTH_CURRENT += 1
 
     uExtensions = []
-    if len(extensions): uExtensions = map(lambda extension : extension.upper(), extensions)
+    if len(extensions): uExtensions = list(map(lambda extension : extension.upper(), extensions))
     l = os.listdir(directory)
 
     for e in l:
@@ -89,3 +92,9 @@ def LSRecursive(directory, fnCallback, extensions = [], depth = LSR_DEPTH_MAX):
     LSR_DEPTH_CURRENT = 0
 
     return True
+
+def DetermineEncoding(filePath):
+    f = open(filePath, "rb")
+    data = f.read(7) # a reasonable number of bytes
+    f.close()
+    return Utils.DetermineTextEncoding(data)

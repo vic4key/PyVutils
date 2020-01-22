@@ -2,7 +2,7 @@
 
 # Vutils for Utils
 
-import ctypes, re, enum
+import sys, re, enum, ctypes
 
 # ---
 
@@ -41,12 +41,14 @@ class TextEncoding(enum.Enum):
     UTF16_LE_BOM = (4, "Unicode BOM", "UTF-16 Little Endian BOM")
     UTF16_BE_BOM = (5, "Unicode BE BOM", "UTF-16 Big Endian BOM")
 
-def DetermineTextEncoding(text : bytes):
+def DetermineTextEncoding(text): # bytearray/bytes
 
     CHAR_BIT     = 8    # // number of bits in a char
     SCHAR_MIN    = -128 # // minimum signed char value
     SCHAR_MAX    = 127  # // maximum signed char value
     UCHAR_MAX    = 255  # // maximum unsigned char value
+    
+    if sys.version_info[0] < 3: text = bytearray(text)
 
     if not text: return TextEncoding.UNKNOWN
 

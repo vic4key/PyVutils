@@ -54,9 +54,7 @@ def DetermineTextEncoding(text): # bytearray/bytes
 
     if not text: return TextEncoding.UNKNOWN
 
-    size = len(text)
-
-    if size == 1:
+    if len(text) == 1:
         if SCHAR_MIN <= text[0] <= SCHAR_MAX: return TextEncoding.UTF8_BOM
         else: return  TextEncoding.UNKNOWN
 

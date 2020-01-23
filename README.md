@@ -4,7 +4,6 @@ PyVutils or Python Vic Utilities is an utility library written in Python for Pyt
 
 # Information
 
-- [x] Windows 32-bit & 64-bit
 - [x] Python 2 & Python 3
 
 # Contact

@@ -40,8 +40,8 @@ class TextEncoding(enum.Enum):
     UTF16_BE     = (3, "Unicode BE", "UTF-16 Big Endian")
     UTF16_LE_BOM = (4, "Unicode BOM", "UTF-16 Little Endian BOM")
     UTF16_BE_BOM = (5, "Unicode BE BOM", "UTF-16 Big Endian BOM")
-    UTF32_LE_BOM = (5, "UTF-32 LE BOM", "UTF-32 Little Endian BOM")
-    UTF32_BE_BOM = (5, "UTF-32 BE BOM", "UTF-32 Big Endian BOM")
+    UTF32_LE_BOM = (6, "UTF-32 LE BOM", "UTF-32 Little Endian BOM")
+    UTF32_BE_BOM = (7, "UTF-32 BE BOM", "UTF-32 Big Endian BOM")
 
 def DetermineTextEncoding(text): # bytearray/bytes
 

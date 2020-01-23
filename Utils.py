@@ -40,6 +40,8 @@ class TextEncoding(enum.Enum):
     UTF16_BE     = (3, "Unicode BE", "UTF-16 Big Endian")
     UTF16_LE_BOM = (4, "Unicode BOM", "UTF-16 Little Endian BOM")
     UTF16_BE_BOM = (5, "Unicode BE BOM", "UTF-16 Big Endian BOM")
+    UTF32_LE_BOM = (5, "UTF-32 LE BOM", "UTF-32 Little Endian BOM")
+    UTF32_BE_BOM = (5, "UTF-32 BE BOM", "UTF-32 Big Endian BOM")
 
 def DetermineTextEncoding(text): # bytearray/bytes
 
@@ -47,7 +49,7 @@ def DetermineTextEncoding(text): # bytearray/bytes
     SCHAR_MIN    = -128 # // minimum signed char value
     SCHAR_MAX    = 127  # // maximum signed char value
     UCHAR_MAX    = 255  # // maximum unsigned char value
-    
+
     if sys.version_info[0] < 3: text = bytearray(text)
 
     if not text: return TextEncoding.UNKNOWN
@@ -55,28 +57,43 @@ def DetermineTextEncoding(text): # bytearray/bytes
     size = len(text)
 
     if size == 1:
-
-        # UTF-8
         if SCHAR_MIN <= text[0] <= SCHAR_MAX: return TextEncoding.UTF8_BOM
+        else: return  TextEncoding.UNKNOWN
 
-    if size >= 2:
+    try:
 
         # UTF-8 BOM
-        if size >= 3 and text[0] == 0xEF and text[1] == 0xBB and text[2] == 0xBF: return TextEncoding.UTF8_BOM
+        if text.startswith(bytearray.fromhex("EFBBBF")):
+            return TextEncoding.UTF8_BOM
+
+        # UTF-32 LE BOM
+        if text.startswith(bytearray.fromhex("FFFE0000")):
+            return TextEncoding.UTF32_LE_BOM
+
+        # UTF-32 BE BOM
+        if text.startswith(bytearray.fromhex("0000FEFF")):
+            return TextEncoding.UTF32_BE_BOM
 
         # UTF-16 LE
-        if SCHAR_MIN << text[0] <= SCHAR_MAX and text[1] == 0x00: return TextEncoding.UTF16_LE
+        if SCHAR_MIN << text[0] <= SCHAR_MAX and text[1] == 0x00:
+            return TextEncoding.UTF16_LE
 
         # UTF-16 BE
-        if SCHAR_MIN << text[1] <= SCHAR_MAX and text[0] == 0x00: return TextEncoding.UTF16_BE
+        if SCHAR_MIN << text[1] <= SCHAR_MAX and text[0] == 0x00:
+            return TextEncoding.UTF16_BE
 
         # UTF-16 LE BOM
-        if text[0] == 0xFF and text[1] == 0xFE: return TextEncoding.UTF16_LE_BOM
+        if text.startswith(bytearray.fromhex("FFFE")):
+            return TextEncoding.UTF16_LE_BOM
 
         # UTF-16 BE BOM
-        if text[0] == 0xFE and text[1] == 0xFF: return TextEncoding.UTF16_BE_BOM
+        if text.startswith(bytearray.fromhex("FEFF")):
+            return TextEncoding.UTF16_BE_BOM
 
         # UTF-8
-        if SCHAR_MIN <= text[0] <= SCHAR_MAX and SCHAR_MIN <= text[1] <= SCHAR_MAX: return TextEncoding.UTF8
+        if SCHAR_MIN <= text[0] <= SCHAR_MAX and SCHAR_MIN <= text[1] <= SCHAR_MAX:
+            return TextEncoding.UTF8
+
+    except IndexError as e: return TextEncoding.UNKNOWN
 
     return TextEncoding.UNKNOWN

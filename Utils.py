@@ -74,14 +74,6 @@ def DetermineTextEncoding(text): # bytearray/bytes
         if text.startswith(bytearray.fromhex("0000FEFF")):
             return TextEncoding.UTF32_BE_BOM
 
-        # UTF-16 LE
-        if SCHAR_MIN << text[0] <= SCHAR_MAX and text[1] == 0x00:
-            return TextEncoding.UTF16_LE
-
-        # UTF-16 BE
-        if SCHAR_MIN << text[1] <= SCHAR_MAX and text[0] == 0x00:
-            return TextEncoding.UTF16_BE
-
         # UTF-16 LE BOM
         if text.startswith(bytearray.fromhex("FFFE")):
             return TextEncoding.UTF16_LE_BOM
@@ -89,6 +81,14 @@ def DetermineTextEncoding(text): # bytearray/bytes
         # UTF-16 BE BOM
         if text.startswith(bytearray.fromhex("FEFF")):
             return TextEncoding.UTF16_BE_BOM
+
+        # UTF-16 LE
+        if SCHAR_MIN << text[0] <= SCHAR_MAX and text[1] == 0x00:
+            return TextEncoding.UTF16_LE
+
+        # UTF-16 BE
+        if SCHAR_MIN << text[1] <= SCHAR_MAX and text[0] == 0x00:
+            return TextEncoding.UTF16_BE
 
         # UTF-8
         if SCHAR_MIN <= text[0] <= SCHAR_MAX and SCHAR_MIN <= text[1] <= SCHAR_MAX:

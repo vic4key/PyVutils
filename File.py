@@ -86,6 +86,7 @@ def LSRecursive(directory, fnCallback, extensions = [], depth = LSR_DEPTH_MAX):
                     if fileExtension in uExtensions : fnCallback(filePath, directory, e)
                 else : fnCallback(filePath, directory, e)
             else : pass # Unknown file type
+        except WindowsError as e : pass
         except Exception as e : print(e)
     pass
 

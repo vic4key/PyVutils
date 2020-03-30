@@ -2,6 +2,13 @@ from multiprocessing import Process, Queue, cpu_count
 
 POOL_BATCH_RESULT = "POOL_BATCH_RESULT"
 
+def _fn_batch(fn, results, batchargs):
+    result = []
+    for args in batchargs:
+        ret = fn(*args)
+        result.append(ret)
+    results.put({ POOL_BATCH_RESULT: result })
+
 class Pool:
     def __init__(self, nprocesses = None, debug = False):
         self._debug = debug
@@ -76,7 +83,7 @@ class Pool:
 
             if self._debug: print("\t\tProcess#%d: %d items" % (i + 1, len(batch_args)))
 
-            process = Process(target=self._fn_batch, args=[self._fn, self._results, batch_args])
+            process = Process(target=_fn_batch, args=[self._fn, self._results, batch_args])
             processes.append(process)
 
         # run multi-processing
@@ -102,19 +109,6 @@ class Pool:
         if self._debug: print("\t%d processes are terminated" % len(processes))
 
         return result
-
-    @staticmethod
-    def _fn_wrapper(fn, result, args, kwargs):
-        ret = fn(*args, **kwargs)
-        result.put(ret)
-
-    @staticmethod
-    def _fn_batch(fn, results, batchargs):
-        result = []
-        for args in batchargs:
-            ret = fn(*args)
-            result.append(ret)
-        results.put({ POOL_BATCH_RESULT: result })
 
 # Eg.
 

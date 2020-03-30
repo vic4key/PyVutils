@@ -4,7 +4,6 @@
 
 import pydicom, glob
 import numpy as np
-import matplotlib.pyplot as plt
 from . import File
 
 def Load(filePath, force=True):
@@ -30,6 +29,8 @@ def Save(filePath, DS):
     return
 
 def View(obj):
+
+    import matplotlib.pyplot as plt
 
     theObjType = type(obj)
     if theObjType is str:

@@ -4,7 +4,7 @@
 import numpy as np
 from PyVutils import Cv
 
-im = Cv.Load("data/57338813_2279331262305612_7257596330455859200_n.jpg")
+im = Cv.Load("data/test.jpg")
 im = Cv.ScaleImage(im, 500)
 
 identity = np.array(
@@ -39,4 +39,11 @@ images.append(im_filtered)
 im_filtered = Cv.Conv2D(im, sharpen)
 images.append(im_filtered)
 
-Cv.Display(Cv.Collage(images, Cv.CV_HSTACK))
+result = Cv.Collage(images, Cv.CV_HSTACK)
+Cv.Save("data/test_filtered.jpg", result)
+
+Cv.Display(result)
+
+'''
+<data/test_filtered.jpg>
+'''

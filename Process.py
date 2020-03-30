@@ -4,20 +4,29 @@ POOL_BATCH_RESULT = "POOL_BATCH_RESULT"
 
 class Pool:
     def __init__(self, nprocesses = None, debug = False):
-        self._nprocesses = nprocesses if not nprocesses in [None, 0] else cpu_count()
-        self._processes = []
-        self._results = Queue()
         self._debug = debug
+        self._fn = None
+        self._tasks = []
+        self._results = Queue()
+        processes = []
+        self._nprocesses = nprocesses if not nprocesses in [None, 0] else cpu_count()
         return
 
-    def AddTask(self, fn, *args, **kwargs):
-        process = Process(target=self._fn_wrapper, args=[fn, self._results, args, kwargs])
-        self._processes.append(process)
+    def AddTask(self, fn, args):
+        self._fn = fn
+        self._tasks.append(args)
         return
 
     def AddTaskBatch(self, fn, listargs):
+        self._fn = fn
+        self._tasks.extend(listargs)
+        return
 
-        num_list_args = len(listargs)
+    def Launch(self, autoclose = True):
+
+        # distribute tasks to each process
+
+        num_list_args = len(self._tasks)
         if num_list_args == 0: return
 
         num_processes = self._nprocesses
@@ -34,6 +43,8 @@ class Pool:
             stop  = start + num_items_per_process
             segments.append(stop)
 
+        # balance tasks in all process
+
         idx_segment_head_for_combination = len(segments) - num_items_left
 
         if num_items_left > 0:
@@ -42,45 +53,53 @@ class Pool:
         del segments[-1]
         segments.insert(0, 0)
 
-        if self._debug: print(f"Summary:"
-                              f"\n\t{num_list_args} items"
-                              f"\n\t{num_processes} processes"
-                              f"\n\t{num_items_per_process} items per process"
-                              f"\n\t{num_items_left} items are combined to last {num_items_left} processes"
-                              f"\n\tProcesses:")
+        # summary tasks
+
+        if self._debug: print(
+            ("Summary:") +
+            ("\n\t%d items" % num_list_args) +
+            ("\n\t%d processes" % num_processes) +
+            ("\n\t%d items per process" % num_items_per_process) +
+            ("\n\t%d items are combined to last %d processes" % (num_items_left, num_items_left)) +
+            ("\n\tProcesses:"))
+
+        # assign tasks to each process
+
+        processes = []
 
         for i, segment in enumerate(segments):
 
             start = segments[i]
             stop  = segments[i + 1] if i < num_processes - 1 else None
 
-            batch_args = listargs[start:stop]
+            batch_args = self._tasks[start:stop]
 
-            if self._debug: print(f"\t\tProcess#{i + 1}: {len(batch_args)} items")
+            if self._debug: print("\t\tProcess#%d: %d items" % (i + 1, len(batch_args)))
 
-            process = Process(target=self._fn_batch, args=[fn, self._results, batch_args])
-            self._processes.append(process)
+            process = Process(target=self._fn_batch, args=[self._fn, self._results, batch_args])
+            processes.append(process)
 
-        return
+        # run multi-processing
 
-    def Launch(self, autoclose = True):
         result = []
 
-        if self._debug: print(f"\t{len(self._processes)} processes are created")
+        if self._debug: print("\t%d processes are created" % len(processes))
 
-        for process in self._processes: process.start()
+        for process in processes: process.start()
 
-        for process in self._processes:
+        # combine results
+
+        for process in processes:
             ret = self._results.get()
             if type(ret) is dict and POOL_BATCH_RESULT in ret.keys():
                 result.extend(ret[POOL_BATCH_RESULT])
             else: result.append(ret)
 
-        for process in self._processes: process.join()
+        for process in processes: process.join()
 
         if autoclose: self._results.close()
 
-        if self._debug: print(f"\t{len(self._processes)} processes are terminated")
+        if self._debug: print("\t%d processes are terminated" % len(processes))
 
         return result
 
@@ -102,12 +121,11 @@ class Pool:
 # from PyVutils import Process
 
 # def task(v1, v2, v3):
-#     print(f"task({v1}, {v2}, {v3})")
 #     for v in range(0, 10000000): pass
 #     return [v1, v2, v3]
 
 # if __name__ == "__main__":
-#     pool = Process.Pool()
+#     pool = Process.Pool(debug=True)
 #     pool.AddTaskBatch(task, [(i, i, i) for i in range(0, 14)])
 #     result = pool.Launch()
 #     print(result)

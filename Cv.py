@@ -178,9 +178,9 @@ def CreateImageMaskByColors(bgrImage, colors, delta = 10, invertMask = True) :
 
     return masks
 
-CN_BLUE  = 0
-CN_GREEN = 1
-CN_RED   = 2
+CV_BLUE  = 0
+CV_GREEN = 1
+CV_RED   = 2
 
 def CombineRGB(image, channel):
     cn_image = cv2.split(image)[channel]
@@ -239,3 +239,18 @@ def ExtractFeature(rgbImage, vectorSize=32):
 
 def Invert(image):
     return cv2.bitwise_not(image)
+
+CV_VSTACK = 0
+CV_HSTACK = 1
+
+def Collage(images, axis = CV_HSTACK):
+
+    nimages = len(images)
+    if nimages == 0: return None
+
+    result = images[0]
+    if nimages == 1: return result
+
+    for image in images[1:]: result = np.concatenate((result, image), axis=axis)
+
+    return result

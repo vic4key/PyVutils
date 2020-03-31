@@ -1,6 +1,6 @@
 from PyVutils import DCM
 
-DS = DCM.Load("data/CT_small.dcm")
+DS = DCM.Load("data/CT_small.dcm") # load a dicom file
 
 print(DS) # view dicom tags
 

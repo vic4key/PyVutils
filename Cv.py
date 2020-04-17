@@ -44,7 +44,7 @@ def Capture(sourceType, fnCallback, windowTitle, *args) :
         ok, frame = cap.read()
         if not ok : break
 
-        if type(sourceType).__name__ == "int": # flip if cap
+        if nframe == -1: # flip if camera
             frame = cv2.flip(frame, 1)
 
         iframe += 1

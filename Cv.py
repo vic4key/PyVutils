@@ -35,28 +35,33 @@ def Capture(sourceType, fnCallback, windowTitle, *args) :
     # https://docs.opencv.org/3.1.0/dd/de7/group__videoio.html
     # http://eitguide.net/su-dung-videocapture-trong-opencv/
 
-    camera = cv2.VideoCapture(sourceType)
+    cap = cv2.VideoCapture(sourceType)
 
     iframe = 0
-    nframe = int(camera.get(cv2.CAP_PROP_FRAME_COUNT))
+    nframe = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
-    while camera.isOpened():
-        ok, frame = camera.read()
+    while cap.isOpened():
+        ok, frame = cap.read()
         if not ok : break
-        if type(sourceType).__name__ == "int": # flip if camera
+
+        if type(sourceType).__name__ == "int": # flip if cap
             frame = cv2.flip(frame, 1)
+
         iframe += 1
         frame = fnCallback(frame, (iframe, nframe), args)
+
         if type(frame).__name__ != "ndarray":
-            camera.release()
+            cap.release()
             raise TypeError("Missing returned frame from the callback function")
+
         cv2.namedWindow(windowTitle, cv2.WINDOW_AUTOSIZE)
         cv2.imshow(windowTitle, frame)
+
         if (cv2.waitKey(1) & 0xFF) in [vkEscape] : break
     pass
 
     cv2.destroyAllWindows()
-    camera.release()
+    cap.release()
 
     return
 

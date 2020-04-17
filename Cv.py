@@ -37,17 +37,22 @@ def Capture(sourceType, fnCallback, windowTitle, *args) :
 
     camera = cv2.VideoCapture(sourceType)
 
+    iframe = 0
+    nframe = int(camera.get(cv2.CAP_PROP_FRAME_COUNT))
+
     while camera.isOpened():
         ok, frame = camera.read()
         if not ok : break
-        frame = cv2.flip(frame, 1)
-        frame = fnCallback(frame, args)
+        if type(sourceType).__name__ == "int": # flip if camera
+            frame = cv2.flip(frame, 1)
+        iframe += 1
+        frame = fnCallback(frame, (iframe, nframe), args)
         if type(frame).__name__ != "ndarray":
             camera.release()
             raise TypeError("Missing returned frame from the callback function")
         cv2.namedWindow(windowTitle, cv2.WINDOW_AUTOSIZE)
         cv2.imshow(windowTitle, frame)
-        if (cv2.waitKey(1) & 0xFF) in [vkSpace, vkEscape, vkReturn] : break
+        if (cv2.waitKey(1) & 0xFF) in [vkEscape] : break
     pass
 
     cv2.destroyAllWindows()
@@ -57,10 +62,10 @@ def Capture(sourceType, fnCallback, windowTitle, *args) :
 
 def Camera(fnCallback, windowTitle = "Sample", *args):
 
-    if type(fnCallback).__name__ != "function" or fnCallback.__code__.co_argcount != 1 :
+    if type(fnCallback).__name__ != "function" or fnCallback.__code__.co_argcount != 2 :
         msg  = "fnCallback` argument must be a callback function"
         msg += " "
-        msg += "`Eg. Callback(frame, *args) -> frame"
+        msg += "`Eg. Callback(frame, frameinfo, *args) -> frame"
         raise NameError(msg)
 
     Capture(cv2.CAP_ANY, fnCallback, windowTitle, args)
@@ -69,10 +74,10 @@ def Camera(fnCallback, windowTitle = "Sample", *args):
 
 def Video(videoFilePath, fnCallback, windowTitle = "Sample", *args):
 
-    if type(fnCallback).__name__ != "function" or fnCallback.__code__.co_argcount != 1 :
+    if type(fnCallback).__name__ != "function" or fnCallback.__code__.co_argcount != 2 :
         msg  = "fnCallback` argument must be a callback function"
         msg += " "
-        msg += "`Eg. Callback(frame, *args) -> frame"
+        msg += "`Eg. Callback(frame, frameinfo, *args) -> frame"
         raise NameError(msg)
 
     Capture(videoFilePath, fnCallback, windowTitle, args)

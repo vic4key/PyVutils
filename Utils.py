@@ -2,7 +2,7 @@
 
 # Vutils for Utils
 
-import sys, re, enum, ctypes
+import sys, re, enum, ctypes, functools, time
 
 # ---
 
@@ -95,3 +95,12 @@ def DetermineTextEncoding(text): # bytearray/bytes
     except IndexError as e: return TextEncoding.UNKNOWN
 
     return TextEncoding.UNKNOWN
+
+def Profile(fn):
+  def _fn_wrapper(*args, **kwargs):
+    start_time = time.perf_counter()
+    result = fn(*args, **kwargs)
+    delta_time = time.perf_counter() - start_time
+    print(f"{fn.__qualname__}(...) -> {delta_time:.3f}s")
+    return result
+  return _fn_wrapper

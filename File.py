@@ -2,7 +2,7 @@
 
 # Vutils for File/Directory
 
-import os, stat
+import os, stat, glob
 
 from . import Utils
 
@@ -72,19 +72,21 @@ def LSRecursive(directory, fnCallback, extensions = [], depth = LSR_DEPTH_MAX):
 
     uExtensions = []
     if len(extensions): uExtensions = list(map(lambda extension : extension.upper(), extensions))
-    l = os.listdir(directory)
 
-    for e in l:
+    pattern = os.path.join(directory, "*")
+
+    for filePath in glob.glob(pattern):
         try:
-            filePath = os.path.join(directory, e)
             mode = os.stat(filePath)[stat.ST_MODE]
             if stat.S_ISDIR(mode):
-                if not LSRecursive(filePath, fnCallback, extensions, depth): break
+                if not filePath.startswith("\\"):
+                    if not LSRecursive(filePath, fnCallback, extensions, depth): break
             elif stat.S_ISREG(mode):
+                fileName = ExtractFileName(filePath)
                 if len(uExtensions):
                     fileExtension = ExtractFileExtension(filePath, False).upper()
-                    if fileExtension in uExtensions : fnCallback(filePath, directory, e)
-                else : fnCallback(filePath, directory, e)
+                    if fileExtension in uExtensions : fnCallback(filePath, directory, fileName)
+                else : fnCallback(filePath, directory, fileName)
             else : pass # Unknown file type
         except WindowsError as e : pass
         except Exception as e : print(e)

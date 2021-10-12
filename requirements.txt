@@ -1,6 +1,6 @@
 matplotlib==3.0.2
 imutils==0.5.2
-opencv_python==3.4.3.18
+opencv_python==3.4.7.28
 mechanize==0.4.0
 numpy==1.18.0
 pydicom==1.2.2

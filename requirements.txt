@@ -4,4 +4,4 @@ opencv_python==3.4.3.18
 mechanize==0.4.0
 numpy==1.22.0
 pydicom==1.2.2
-pywin32==225
+pywin32==301

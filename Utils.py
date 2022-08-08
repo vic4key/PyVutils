@@ -101,6 +101,6 @@ def Profile(fn):
     start_time = time.perf_counter()
     result = fn(*args, **kwargs)
     delta_time = time.perf_counter() - start_time
-    print(f"{fn.__qualname__}(...) -> {delta_time:.3f}s")
+    print("%s(...) -> %.3fs" % (fn.__qualname__, delta_time))
     return result
   return _fn_wrapper

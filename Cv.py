@@ -57,7 +57,7 @@ def Capture(sourceType, fnCallback, windowTitle, *args) :
         cv2.namedWindow(windowTitle, cv2.WINDOW_AUTOSIZE)
         cv2.imshow(windowTitle, frame)
 
-        if (cv2.waitKey(1) & 0xFF) in [vkEscape] : break
+        if (cv2.waitKey(10) & 0xFF) in [vkEscape] : break
     pass
 
     cv2.destroyAllWindows()

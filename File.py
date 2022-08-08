@@ -2,7 +2,7 @@
 
 # Vutils for File/Directory
 
-import os, stat, glob
+import os, stat, glob, re
 
 from . import Utils
 
@@ -101,3 +101,8 @@ def DetermineEncoding(filePath):
     data = f.read(7) # a reasonable number of bytes
     f.close()
     return Utils.DetermineTextEncoding(data)
+
+def CleanFileName(file_name):
+    invalid = '<>:"/\|?*+'
+    for char in invalid: file_name = file_name.replace(char, '')
+    return file_name

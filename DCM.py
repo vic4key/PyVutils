@@ -9,15 +9,7 @@ from . import File
 def Load(filePath, force=True):
     return pydicom.dcmread(filePath, force=force)
 
-def Loadirectory(directory, extension="DCM", force=True):
-
-    pattern = File.Slash(directory)
-    pattern += "*"
-
-    if len(extension) != 0:
-        pattern += "."
-        pattern += extension
-
+def Loadirectory(pattern, force=True):
     return [Load(filePath, force) for filePath in glob.glob(pattern)]
 
 def Store(filePath, DS, likeOriginal = True):

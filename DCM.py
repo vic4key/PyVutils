@@ -10,7 +10,7 @@ def Load(filePath, force=True):
     return pydicom.dcmread(filePath, force=force)
 
 def Loadirectory(pattern, extensions = [], force=True):
-    # load all dicom files into a list
+
     list_ds = []
     def callback(filePath, fileDirectory, fileName):
         try:
@@ -18,7 +18,7 @@ def Loadirectory(pattern, extensions = [], force=True):
         except: print(f"Error when loading '{filePath}'")
         return
     File.LSRecursive(pattern, callback, extensions)
-    # group them to a dict of series by Series Instance UID
+
     dict_series = {}
     if len(list_ds) > 0:
         for ds in list_ds:
@@ -28,6 +28,7 @@ def Loadirectory(pattern, extensions = [], force=True):
                     dict_series[series_instance_uid] = []
                 dict_series[series_instance_uid].append(ds)
             except: print(f"Error when grouping '{ds.filename}'")
+
     return dict_series
 
 def Store(filePath, DS, likeOriginal = True):

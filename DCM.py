@@ -9,8 +9,26 @@ from . import File
 def Load(filePath, force=True):
     return pydicom.dcmread(filePath, force=force)
 
-def Loadirectory(pattern, force=True):
-    return [Load(filePath, force) for filePath in glob.glob(pattern)]
+def Loadirectory(pattern, extensions = [], force=True):
+    # load all dicom files into a list
+    list_ds = []
+    def callback(filePath, fileDirectory, fileName):
+        try:
+            list_ds.append(Load(filePath, force))
+        except: print(f"Error when loading '{filePath}'")
+        return
+    File.LSRecursive(pattern, callback, extensions)
+    # group them to a dict of series by Series Instance UID
+    dict_series = {}
+    if len(list_ds) > 0:
+        for ds in list_ds:
+            try:
+                series_instance_uid = str(ds[0x0020, 0x000E].value) # Series Instance UID
+                if not series_instance_uid in dict_series.keys():        
+                    dict_series[series_instance_uid] = []
+                dict_series[series_instance_uid].append(ds)
+            except: print(f"Error when grouping '{ds.filename}'")
+    return dict_series
 
 def Store(filePath, DS, likeOriginal = True):
     pydicom.filewriter.write_file(filePath, DS, likeOriginal)

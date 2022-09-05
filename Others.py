@@ -52,3 +52,6 @@ def LogException(obj) :
     print("")
 
     return
+
+from functools import lru_cache
+cache = lru_cache(maxsize=None)

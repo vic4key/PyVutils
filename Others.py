@@ -52,3 +52,11 @@ def LogException(obj) :
     print("")
 
     return
+
+def call_once(fn):
+    name = "__call_once_" + fn.__name__
+    def wrapper(self):
+        if not hasattr(self, name):
+            setattr(self, name, fn(self))
+        return getattr(self, name)
+    return wrapper

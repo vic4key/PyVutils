@@ -3,11 +3,11 @@
 # Vutils for Math
 
 import math
-import numpy as NP
+import numpy as np
 
 # ---
 
-def LinearRegression(Xs, Ys):
+def linear_regression(xs, ys):
 
     #  Fx = βx + α
 
@@ -27,32 +27,18 @@ def LinearRegression(Xs, Ys):
 
     # α   = Fxᵢ - βxᵢ (xᵢ & yᵢ here are mean of x & y)
 
-    nPairs = min(NP.size(Xs), NP.size(Ys)) # pairs of data
+    num_pairs = min(np.size(xs), np.size(ys)) # pairs of data
 
-    meanX, meanY = NP.mean(Xs), NP.mean(Ys)
+    mean_x, mean_y = np.mean(xs), np.mean(ys)
 
-    totalXY = totalXX = 0.
+    total_xy = total_xx = 0.
 
-    for i in xrange(0, nPairs):
-        totalXY += (Xs[i] - meanX) * (Ys[i] - meanY)  # ∑xᵢyᵢ
-        totalXX += (Xs[i] - meanX) * (Xs[i] - meanX)  # ∑xᵢ²
+    for i in xrange(0, num_pairs):
+        total_xy += (xs[i] - mean_x) * (ys[i] - mean_y)  # ∑xᵢyᵢ
+        total_xx += (xs[i] - mean_x) * (xs[i] - mean_x)  # ∑xᵢ²
     pass
 
-    B = totalXY / totalXX   # β = ∑xᵢyᵢ ÷ ∑xᵢ²
-    A = meanY - B * meanX   # α = Fxᵢ - βxᵢ (xᵢ & yᵢ here are mean of x & y)
+    b = total_xy / total_xx   # β = ∑xᵢyᵢ ÷ ∑xᵢ²
+    a = mean_y - b * mean_x   # α = Fxᵢ - βxᵢ (xᵢ & yᵢ here are mean of x & y)
 
-    return (A, B)   # α & β
-
-# ---
-
-def Angle2D(P1, P2):
-    X1, Y1 = P1
-    X2, Y2 = P2
-    a = (Y2 - Y1)
-    b = (X2 - X1)
-    return math.degrees(math.atan2(b, a))
-
-def Distance2D(P1, P2) :
-    X1, Y1 = P1
-    X2, Y2 = P2
-    return math.sqrt((X2 - X1)**2 + (Y2 - Y1)**2)
+    return (a, b)   # α & β

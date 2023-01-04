@@ -3,11 +3,11 @@
 # Vutils for Others
 
 import traceback
-from . import File
+from . import FS
 
 # ---
 
-def LogException(obj) :
+def log_exception(obj) :
     IDLE_WIDTH = 80
 
     print("")
@@ -35,7 +35,7 @@ def LogException(obj) :
                 fileName, lineNumber, funcName = info
                 print("%d. '%s' %s at %s : " % (
                     frameNumber,
-                    File.ExtractFileName(fileName.strip())[:-1],
+                    File.extract_file_name(fileName.strip())[:-1],
                     funcName.strip(),
                     lineNumber.strip(),
                 ))

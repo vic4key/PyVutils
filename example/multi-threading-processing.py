@@ -1,19 +1,16 @@
 import time, requests
-from PyVutils import Process, Thread
+import PyVutils as vu
 
 URLS = [
 	'http://www.foxnews.com/',
 	'http://www.cnn.com/',
 	'http://europe.wsj.com/',
-	'http://www.bbc.co.uk/',
 	'http://www.foxnews.com/',
 	'http://www.cnn.com/',
 	'http://europe.wsj.com/',
-	'http://www.bbc.co.uk/',
 	'http://www.foxnews.com/',
 	'http://www.cnn.com/',
 	'http://europe.wsj.com/',
-	'http://www.bbc.co.uk/',
 	'http://www.foxnews.com/',
 	'http://www.cnn.com/',
 ]
@@ -29,9 +26,9 @@ if __name__ == "__main__":
 
 	start_time = time.time()
 
-	pool = Thread.Pool(debug=True)
-	pool.AddTaskBatch(req_url, [(url,) for url in URLS])
-	result = pool.Launch()
+	pool = vu.Pool(debug=True)
+	pool.add_task_batch(req_url, [(url,) for url in URLS])
+	result = pool.launch()
 
 	print(len(result), result)
 	print(f"{time.time() - start_time} seconds")
@@ -40,9 +37,9 @@ if __name__ == "__main__":
 
 	start_time = time.time()
 
-	pool = Process.Pool(debug=True)
-	pool.AddTaskBatch(req_url, [(url,) for url in URLS])
-	result = pool.Launch()
+	pool = vu.Pool(debug=True)
+	pool.add_task_batch(req_url, [(url,) for url in URLS])
+	result = pool.launch()
 
 	print(len(result), result)
 	print(f"{time.time() - start_time} seconds")

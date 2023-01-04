@@ -4,20 +4,20 @@
 
 import pydicom, glob
 import numpy as np
-from . import File
+from . import FS
 
-def Load(filePath, force=True):
-    return pydicom.dcmread(filePath, force=force)
+def load_dicom(file_path, force=True):
+    return pydicom.dcmread(file_path, force=force)
 
-def Loadirectory(pattern, extensions = [], force=True):
+def load_dicom_directory(pattern, extensions = [], force=True):
 
     list_ds = []
-    def callback(filePath, fileDirectory, fileName):
+    def callback(file_path, file_directory, file_name):
         try:
-            list_ds.append(Load(filePath, force))
-        except: print(f"Error when loading '{filePath}'")
+            list_ds.append(load_dicom(file_path, force))
+        except: print(f"Error when loading '{file_path}'")
         return
-    File.LSRecursive(pattern, callback, extensions)
+    File.recursive_directory(pattern, callback, extensions)
 
     dict_series = {}
     if len(list_ds) > 0:
@@ -31,28 +31,28 @@ def Loadirectory(pattern, extensions = [], force=True):
 
     return dict_series
 
-def Store(filePath, DS, likeOriginal = True):
-    pydicom.filewriter.write_file(filePath, DS, likeOriginal)
+def store_dicom_file(file_path, data_set, like_original = True):
+    pydicom.filewriter.write_file(file_path, data_set, like_original)
     return
 
-def Save(filePath, DS):
-    DS.save_as(filePath)
+def save_dicom_file(file_path, data_set):
+    data_set.save_as(file_path)
     return
 
-def View(obj):
+def view_dicom_image(any_obj):
 
     import matplotlib.pyplot as plt
 
-    theObjType = type(obj)
-    if theObjType is str:
-        DS = Load(obj)
+    obj_type = type(any_obj)
+    if obj_type is str:
+        DS = load_dicom(any_obj)
         plt.imshow(DS.pixel_array, cmap=plt.cm.bone)
         plt.show()
-    elif theObjType is pydicom.dataset.FileDataset:
-        plt.imshow(obj.pixel_array, cmap=plt.cm.bone)
+    elif obj_type is pydicom.dataset.FileDataset:
+        plt.imshow(any_obj.pixel_array, cmap=plt.cm.bone)
         plt.show()
-    elif theObjType is np.ndarray:
-        plt.imshow(obj, cmap=plt.cm.bone)
+    elif obj_type is np.ndarray:
+        plt.imshow(any_obj, cmap=plt.cm.bone)
         plt.show()
     else:
         print("ERROR: Unknown object type")

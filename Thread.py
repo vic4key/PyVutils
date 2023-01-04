@@ -37,17 +37,17 @@ class Pool:
         self._results = Queue()
         self._nthreads = nthreads if not nthreads in [None, 0] else cpu_count()
 
-    def AddTask(self, fn, args):
+    def add_task(self, fn, args):
         self._fn = fn
         self._tasks.append(args)
         return
 
-    def AddTaskBatch(self, fn, listargs):
+    def add_task_batch(self, fn, listargs):
         self._fn = fn
         self._tasks.extend(listargs)
         return
 
-    def Launch(self):
+    def launch(self):
 
         # distribute tasks to each thread
 
@@ -164,14 +164,14 @@ class StoppableThread(Thread):
 		self.__run_backup()
 		self.run = self.__run_backup
 
-	def globaltrace(self, frame, why, arg):
+	def global_trace(self, frame, why, arg):
 		if why == "call":
-			return self.localtrace
+			return self.local_trace
 		else:
 			return None
 
-	def localtrace(self, frame, why, arg):
+	def local_trace(self, frame, why, arg):
 		if self.m_killed:
 			if why == "line":
 				raise SystemExit()
-		return self.localtrace
+		return self.local_trace

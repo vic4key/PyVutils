@@ -6,11 +6,11 @@ import base64, hashlib
 
 # ---
 
-def Base64Encode(text): return base64.b64encode(text)
+def b64_encode(text): return base64.b64encode(text)
 
-def Base64Decode(text): return base64.b64decode(text)
+def b64_decode(text): return base64.b64decode(text)
 
-def Hash(algo, string, upper = True):
+def hash(algo, string, upper = True):
     cipher = ""
     try:
         HL = getattr(hashlib, algo)()

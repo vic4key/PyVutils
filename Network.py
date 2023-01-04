@@ -70,9 +70,9 @@ def fnDefaultCallback(instance, data): return data
 PROXY_DEFAULT_NUM_CLIENTS = 100
 PROXY_DEFAULT_BUFFER_SIZE = 500*1024 # 500KB
 
-class proxy_client(Thread):
+class _ProxyClient(Thread):
     def __init__(self, host, port, fn_callback, timeout, debug = False):
-        super(proxy_client, self).__init__()
+        super(_ProxyClient, self).__init__()
 
         self._debug = debug
         if self._debug : print("[ctor] %s => %08x" % (self.__class__.__name__, id(self)))
@@ -109,10 +109,10 @@ class proxy_client(Thread):
                 break
         return
 
-class proxy_target(Thread):
+class _ProxyTarget(Thread):
 
     def __init__(self, host, port, fn_callback, timeout, debug = False):
-        super(proxy_target, self).__init__()
+        super(_ProxyTarget, self).__init__()
 
         self._debug = debug
         if self._debug : print("[ctor] %s => %08x" % (self.__class__.__name__, id(self)))
@@ -145,7 +145,7 @@ class proxy_target(Thread):
                 break
         return
 
-class Proxy(Thread):
+class NetworkProxy(Thread):
 
     def __init__(self,
         proxy,
@@ -154,7 +154,7 @@ class Proxy(Thread):
         timeout = None,
         debug = False):
 
-        super(Proxy, self).__init__()
+        super(NetworkProxy, self).__init__()
 
         self._fn_client_callback, self._fn_server_callback = callback
         if self._fn_client_callback == None: self._fn_client_callback = fnDefaultCallback
@@ -181,7 +181,7 @@ class Proxy(Thread):
                 print("[proxy] %s:%d => %s:%d" % (
                     self._from_host, self._from_port, self._to_host, self._to_port))
 
-            self._proxy_client = proxy_client(
+            self._proxy_client = _ProxyClient(
                 self._from_host,
                 self._from_port,
                 self._fn_client_callback,
@@ -189,7 +189,7 @@ class Proxy(Thread):
                 self._debug
             )
 
-            self._proxy_target = proxy_target(
+            self._proxy_target = _ProxyTarget(
                 self._to_host,
                 self._to_port,
                 self._fn_server_callback,

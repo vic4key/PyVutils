@@ -2,10 +2,10 @@
 # https://docs.gimp.org/2.8/en/plug-in-convmatrix.html
 
 import numpy as np
-from PyVutils import Cv
+import PyVutils as vu
 
-im = Cv.Load("data/test.jpg")
-im = Cv.ScaleImage(im, 500)
+image = vu.load_image("data/test.jpg")
+image = vu.scale_image(image, 500)
 
 identity = np.array(
 [
@@ -30,19 +30,19 @@ blur = np.array(
 
 images = []
 
-im_filtered = Cv.Conv2D(im, identity)
-images.append(im)
+im_filtered = vu.conv_2d(image, identity)
+images.append(image)
 
-im_filtered = Cv.Conv2D(im, blur)
+im_filtered = vu.conv_2d(image, blur)
 images.append(im_filtered)
 
-im_filtered = Cv.Conv2D(im, sharpen)
+im_filtered = vu.conv_2d(image, sharpen)
 images.append(im_filtered)
 
-result = Cv.Collage(images, Cv.CV_HSTACK)
-Cv.Save("data/test_filtered.jpg", result)
+result = vu.display_collage_images(images, vu.CV_HSTACK)
+vu.save_image("data/test_filtered.jpg", result)
 
-Cv.Display(result)
+vu.display_image(result)
 
 '''
 <data/test_filtered.jpg>

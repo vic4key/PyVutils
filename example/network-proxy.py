@@ -3,11 +3,11 @@
 
 # https://github.com/benoitc/http-parser
 
-from PyVutils import Network
+import PyVutils as vu
 from pprint import *
 from email import message_from_string
 
-def fn_mitm(self, data):
+def callback(self, data):
 	try:
 		s = data.decode("ascii", "ignore")
 		request, hdrs = s.split("\r\n", 1)
@@ -17,12 +17,12 @@ def fn_mitm(self, data):
 	except Exception as e: print("[exception]:", e)
 	return data
 
-proxy = Network.Proxy(
+proxy = vu.NetworkProxy(
 	proxy=("127.0.0.1", 8080),
 	target=("vic.onl", 80),
-	callback=(fn_mitm, fn_mitm),
+	callback=(callback, callback),
 	timeout=None,
-	debug=False
+	debug=True,
 )
 
 proxy.start()

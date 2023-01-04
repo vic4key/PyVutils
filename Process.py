@@ -19,17 +19,17 @@ class Pool:
         self._nprocesses = nprocesses if not nprocesses in [None, 0] else cpu_count()
         return
 
-    def AddTask(self, fn, args):
+    def add_task(self, fn, args):
         self._fn = fn
         self._tasks.append(args)
         return
 
-    def AddTaskBatch(self, fn, listargs):
+    def add_task_batch(self, fn, listargs):
         self._fn = fn
         self._tasks.extend(listargs)
         return
 
-    def Launch(self, autoclose = True):
+    def launch(self, autoclose = True):
 
         # distribute tasks to each process
 
@@ -124,7 +124,7 @@ class Pool:
 #     result = pool.Launch()
 #     print(result)
 
-def AdjustPrivileges(privileges, enable=True):
+def adjust_privileges(privileges, enable=True):
     # https://docs.microsoft.com/en-us/windows/win32/secauthz/privilege-constants
     import win32api, win32security
     flags = win32security.TOKEN_ADJUST_PRIVILEGES | win32security.TOKEN_QUERY

@@ -6,17 +6,17 @@ import sys, re, enum, ctypes, functools, time
 
 # ---
 
-def ScreenSize() :
+def get_screen_size() :
     SM_CXSCREEN = 0
     SM_CYSCREEN = 1
     user32 = ctypes.windll.user32
     return user32.GetSystemMetrics(SM_CXSCREEN), user32.GetSystemMetrics(SM_CYSCREEN)
 
-def GetCenterWindowOnScreen(width, height) :
-    w, h = ScreenSize()
+def get_center_window_on_screen(width, height) :
+    w, h = get_screen_size()
     return int(w / 2) - int(width / 2), int(h / 2) - int(height / 2)
 
-def ReplaceExactWordOnly(text, old, new):
+def replace_exact_word_only(text, old, new):
     pattern  = r"(?<=[^\da-zA-z_])"
     pattern += old
     pattern += r"(?=[^\da-zA-z_])"
@@ -27,7 +27,7 @@ Eg. text   = "16x09.bin\nimage_07x02.bin"
     regex  = r"([\d]+)x([\d]+)"
     result = [('16', '09'), ('07', '02')]
 '''
-def RegEx(text, regex, flags = re.MULTILINE | re.IGNORECASE):
+def reg_ex(text, regex, flags = re.MULTILINE | re.IGNORECASE):
     result = re.findall(regex, text, flags)
     if len(result) == 1 and not type(result[0]) is tuple: result = [(result[0],)]
     return result
@@ -43,7 +43,7 @@ class TextEncoding(enum.Enum):
     UTF32_LE_BOM = (6, "UTF-32 LE BOM", "UTF-32 Little Endian BOM")
     UTF32_BE_BOM = (7, "UTF-32 BE BOM", "UTF-32 Big Endian BOM")
 
-def DetermineTextEncoding(text): # bytearray/bytes
+def determine_text_encoding(text): # bytearray/bytes
 
     CHAR_BIT     = 8    # // number of bits in a char
     SCHAR_MIN    = -128 # // minimum signed char value
@@ -96,7 +96,7 @@ def DetermineTextEncoding(text): # bytearray/bytes
 
     return TextEncoding.UNKNOWN
 
-def Profile(fn):
+def profiling(fn):
   def _fn_wrapper(*args, **kwargs):
     start_time = time.perf_counter()
     result = fn(*args, **kwargs)

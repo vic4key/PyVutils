@@ -26,7 +26,7 @@ YiB = KiB**8
 
 # ---
 
-def FormatBytes(number, unit = 1024) :
+def format_bytes(number, unit = 1024) :
     e = 0
     l = ["B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"]
     if number > 0: e = int(math.log(number, unit))
@@ -34,32 +34,32 @@ def FormatBytes(number, unit = 1024) :
     # else: s = "%0.2f 10^%d" % (float(number) / unit**e, e)
     return s
 
-def QwordToDouble(value) :
+def qword_to_double(value) :
     p = ctypes.pointer(ctypes.c_ulonglong(value))
     p = ctypes.cast(p, ctypes.POINTER(ctypes.c_double))
     return p.contents.value
 
-Q2D = lambda value : QwordToDouble(value)
+Q2D = lambda value : qword_to_double(value)
 
-def DwordToFloat(value) :
+def dword_to_float(value) :
     p = ctypes.pointer(ctypes.c_ulong(value))
     p = ctypes.cast(p, ctypes.POINTER(ctypes.c_float))
     return p.contents.value
 
-D2F = lambda value : DwordToFloat(value)
+D2F = lambda value : dword_to_float(value)
 
 # ---
 
-def ExtractBytes(number, position, n = 0) :
+def extract_bytes(number, position, n = 0) :
     result = 0
     if position < 0 and n > 0 : result = number & int("F"*n, 16)
     else : result = number & int("FF"*position, 16)
     return result
 
-Byte  = lambda number : ExtractBytes(number, 1)
-Word  = lambda number : ExtractBytes(number, 2)
-Dword = lambda number : ExtractBytes(number, 4)
-Qword = lambda number : ExtractBytes(number, 8)
+Byte  = lambda number : extract_bytes(number, 1)
+Word  = lambda number : extract_bytes(number, 2)
+Dword = lambda number : extract_bytes(number, 4)
+Qword = lambda number : extract_bytes(number, 8)
 
 # ---
 

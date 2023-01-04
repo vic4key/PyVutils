@@ -79,8 +79,8 @@ def LSRecursive(directory, fnCallback, extensions = [], depth = LSR_DEPTH_MAX):
         try:
             mode = os.stat(filePath)[stat.ST_MODE]
             if stat.S_ISDIR(mode):
-                if not filePath.startswith("\\"):
-                    if not LSRecursive(filePath, fnCallback, extensions, depth): break
+                # if not filePath.startswith("\\"): # comment for LAN sharing path
+                if not LSRecursive(filePath, fnCallback, extensions, depth): break
             elif stat.S_ISREG(mode):
                 fileName = ExtractFileName(filePath)
                 if len(uExtensions):

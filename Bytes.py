@@ -39,14 +39,10 @@ def qword_to_double(value) :
     p = ctypes.cast(p, ctypes.POINTER(ctypes.c_double))
     return p.contents.value
 
-Q2D = lambda value : qword_to_double(value)
-
 def dword_to_float(value) :
     p = ctypes.pointer(ctypes.c_ulong(value))
     p = ctypes.cast(p, ctypes.POINTER(ctypes.c_float))
     return p.contents.value
-
-D2F = lambda value : dword_to_float(value)
 
 # ---
 
@@ -56,10 +52,11 @@ def extract_bytes(number, position, n = 0) :
     else : result = number & int("FF"*position, 16)
     return result
 
-Byte  = lambda number : extract_bytes(number, 1)
-Word  = lambda number : extract_bytes(number, 2)
-Dword = lambda number : extract_bytes(number, 4)
-Qword = lambda number : extract_bytes(number, 8)
+# Casting. Eg. byte(0x1234) -> 0x34
+byte  = lambda number : extract_bytes(number, 1)
+word  = lambda number : extract_bytes(number, 2)
+dword = lambda number : extract_bytes(number, 4)
+qword = lambda number : extract_bytes(number, 8)
 
 # ---
 

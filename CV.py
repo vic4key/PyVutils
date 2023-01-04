@@ -70,7 +70,7 @@ def webcam(fn, window_title = "Sample", *args):
     if type(fn).__name__ != "function" or fn.__code__.co_argcount != 2 :
         msg  = "fn` argument must be a callback function"
         msg += " "
-        msg += "`Eg. Callback(frame, frameinfo, *args) -> frame"
+        msg += "`Eg. callback(frame, frameinfo, *args) -> frame"
         raise NameError(msg)
 
     _video_capture(cv2.CAP_ANY, fn, window_title, args)
@@ -82,7 +82,7 @@ def play_video(video_file_path, fn, window_title = "Sample", *args):
     if type(fn).__name__ != "function" or fn.__code__.co_argcount != 2 :
         msg  = "fn` argument must be a callback function"
         msg += " "
-        msg += "`Eg. Callback(frame, frameinfo, *args) -> frame"
+        msg += "`Eg. callback(frame, frameinfo, *args) -> frame"
         raise NameError(msg)
 
     _video_capture(video_file_path, fn, window_title, args)

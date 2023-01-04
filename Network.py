@@ -65,7 +65,7 @@ def Browser(headers = [], debug = False, robots = True, redirect = True, referer
 import socket
 from threading import Thread
 
-def fnDefaultCallback(instance, data): return data
+def fn_default_callback(instance, data): return data
 
 PROXY_DEFAULT_NUM_CLIENTS = 100
 PROXY_DEFAULT_BUFFER_SIZE = 500*1024 # 500KB
@@ -150,15 +150,15 @@ class NetworkProxy(Thread):
     def __init__(self,
         proxy,
         target,
-        callback = (fnDefaultCallback, fnDefaultCallback),
+        callback = (fn_default_callback, fn_default_callback),
         timeout = None,
         debug = False):
 
         super(NetworkProxy, self).__init__()
 
         self._fn_client_callback, self._fn_server_callback = callback
-        if self._fn_client_callback == None: self._fn_client_callback = fnDefaultCallback
-        if self._fn_server_callback == None: self._fn_server_callback = fnDefaultCallback
+        if self._fn_client_callback == None: self._fn_client_callback = fn_default_callback
+        if self._fn_server_callback == None: self._fn_server_callback = fn_default_callback
 
         self._to_host, self._to_port = target
         self._from_host, self._from_port = proxy

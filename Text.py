@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Vutils for Utils
+# Vutils for Text
 
 import sys, re, enum
 

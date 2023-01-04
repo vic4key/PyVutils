@@ -20,6 +20,7 @@ __all__ =\
     "Network",
     "Others",
     "Process",
+    "Text",
     "Thread",
     "Utils",
 ]
@@ -35,5 +36,6 @@ from .Math import *
 from .Network import *
 from .Others import *
 from .Process import *
+from .Text import *
 from .Thread import *
 from .Utils import *

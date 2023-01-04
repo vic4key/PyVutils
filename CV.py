@@ -192,7 +192,7 @@ CV_BLUE  = 0
 CV_GREEN = 1
 CV_RED   = 2
 
-def splCV_rgb_channel(image, channel):
+def split_rgb_channel(image, channel):
     cn_image = cv2.split(image)[channel]
     return cv2.merge((cn_image, cn_image, cn_image))
 

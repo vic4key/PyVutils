@@ -5,3 +5,4 @@ numpy
 pydicom
 requests
 win32security
+opencv-python

@@ -13,34 +13,34 @@ except ImportError:
 
 # https://mechanize.readthedocs.io/en/latest/
 
-# Example:
-# browser = vu.web_rowser()
-# browser.open("http://viclab.biz/")
+# Eg.
+# browser = vu.WebBrowser(headers={"test": "test"})
+# browser.open("https://cold-dream-9470.bss.design")
 # print(browser.title())
 # for form in browser.forms(): print(form)
 
-def web_browser(headers = {}, debug = False, robots = True, redirect = True, referer = True, equiv = True, cookieFile = "") :
-    browser = mechanize.Browser()
+class WebBrowser(mechanize.Browser):
+    def __init__(self, headers = {}, debug=False, robots=True, redirect=True, referer=True, equiv=True, cookie_file_path=""):
+        super(WebBrowser, self).__init__()
 
-    cookiejar = cookielib.LWPCookieJar()
-    browser.set_cookiejar(cookiejar)
-    if len(cookieFile) > 0 and os.path.exists(cookieFile) : cookiejar.load(cookieFile)
+        cookiejar = cookielib.LWPCookieJar()
+        self.set_cookiejar(cookiejar)
+        if len(cookie_file_path) > 0 and os.path.exists(cookie_file_path):
+            cookiejar.load(cookie_file_path)
 
-    browser.set_handle_robots(robots)
-    browser.set_handle_equiv(equiv)
-    browser.set_handle_referer(referer)
-    browser.set_handle_redirect(redirect)
-    browser.set_handle_refresh(mechanize._http.HTTPRefreshProcessor(), max_time = 1)
+        self.set_handle_robots(robots)
+        self.set_handle_equiv(equiv)
+        self.set_handle_referer(referer)
+        self.set_handle_redirect(redirect)
+        self.set_handle_refresh(mechanize._http.HTTPRefreshProcessor(), max_time = 1)
 
-    browser.addheaders.extend([(k, v) for k, v in headers.items()])
+        self.addheaders.extend([(k, v) for k, v in headers.items()])
 
-    if debug :
-        browser.set_debug_http(True)
-        browser.set_debug_redirects(True)
-        browser.set_debug_responses(True)
-    pass
-
-    return browser
+        if debug :
+            self.set_debug_http(True)
+            self.set_debug_redirects(True)
+            self.set_debug_responses(True)
+        pass
 
 # Proxy Server
 
@@ -49,7 +49,7 @@ def web_browser(headers = {}, debug = False, robots = True, redirect = True, ref
 # from pprint import *
 # from email import message_from_string
 #
-# def fnCallback(self, data):
+# def callback(self, data):
 #     try:
 #         s = data.decode("ascii", "ignore")
 #         request, hdrs = s.split("\r\n", 1)
@@ -59,7 +59,7 @@ def web_browser(headers = {}, debug = False, robots = True, redirect = True, ref
 #     except Exception as e: print("[exception]:", e)
 #     return data
 #
-# proxy = Network.Proxy(proxy=("127.0.0.1", 8080), target=("vic.onl", 80), callback=(fnCallback, fnCallback), timeout=None, debug=True)
+# proxy = Network.Proxy(proxy=("127.0.0.1", 8080), target=("vic.onl", 80), callback=(callback, callback), timeout=None, debug=True)
 # proxy.start()
 
 import socket

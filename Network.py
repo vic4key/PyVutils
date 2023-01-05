@@ -14,12 +14,12 @@ except ImportError:
 # https://mechanize.readthedocs.io/en/latest/
 
 # Example:
-# browser = Network.Browser()
+# browser = vu.web_rowser()
 # browser.open("http://viclab.biz/")
 # print(browser.title())
 # for form in browser.forms(): print(form)
 
-def Browser(headers = [], debug = False, robots = True, redirect = True, referer = True, equiv = True, cookieFile = "") :
+def web_browser(headers = [], debug = False, robots = True, redirect = True, referer = True, equiv = True, cookieFile = "") :
     browser = mechanize.Browser()
 
     cookiejar = cookielib.LWPCookieJar()

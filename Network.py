@@ -19,7 +19,7 @@ except ImportError:
 # print(browser.title())
 # for form in browser.forms(): print(form)
 
-def web_browser(headers = [], debug = False, robots = True, redirect = True, referer = True, equiv = True, cookieFile = "") :
+def web_browser(headers = {}, debug = False, robots = True, redirect = True, referer = True, equiv = True, cookieFile = "") :
     browser = mechanize.Browser()
 
     cookiejar = cookielib.LWPCookieJar()
@@ -32,7 +32,7 @@ def web_browser(headers = [], debug = False, robots = True, redirect = True, ref
     browser.set_handle_redirect(redirect)
     browser.set_handle_refresh(mechanize._http.HTTPRefreshProcessor(), max_time = 1)
 
-    browser.addheaders = headers
+    browser.addheaders.extend([(k, v) for k, v in headers.items()])
 
     if debug :
         browser.set_debug_http(True)

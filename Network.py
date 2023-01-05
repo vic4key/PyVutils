@@ -14,7 +14,7 @@ except ImportError:
 # https://mechanize.readthedocs.io/en/latest/
 
 # Eg.
-# browser = vu.WebBrowser(headers={"test": "test"})
+# browser = vu.WebBrowser()
 # browser.open("https://cold-dream-9470.bss.design")
 # print(browser.title())
 # for form in browser.forms(): print(form)

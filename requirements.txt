@@ -1,9 +1,11 @@
+comtypes
 imutils
 matplotlib
 mechanize
 multipledispatch
 numpy
 opencv_python
+pycaw
 pydicom
 pywin32
 requests

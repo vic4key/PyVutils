@@ -26,7 +26,7 @@ def linear_regression(xs, ys):
 
     total_xy = total_xx = 0.
 
-    for i in xrange(0, num_pairs):
+    for i in range(0, num_pairs):
         total_xy += (xs[i] - mean_x) * (ys[i] - mean_y)  # ∑xᵢyᵢ
         total_xx += (xs[i] - mean_x) * (xs[i] - mean_x)  # ∑xᵢ²
     pass

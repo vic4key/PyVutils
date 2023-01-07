@@ -9,4 +9,5 @@ pycaw
 pydicom
 pywin32
 requests
+scikit_learn
 win32security

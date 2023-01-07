@@ -6,6 +6,8 @@ import math
 import numpy as np
 from enum import Enum
 
+from sklearn.linear_model import RANSACRegressor
+
 # ---
 
 def linear_regression(xs, ys):
@@ -35,6 +37,30 @@ def linear_regression(xs, ys):
     a = mean_y - b * mean_x   # α = Fxᵢ - βxᵢ (xᵢ & yᵢ here are mean of x & y)
 
     return (a, b) # α & β
+
+def find_representative_value_for_list_values(values: list, noise_filter: int):
+    '''
+    Use the RANSAC regression to find the representative of a list of values.
+    :param values: A list of distances
+    :param noise_filter: The noise filter value
+    :return: The representative value
+    '''
+
+    Ys = [v // noise_filter * noise_filter for v in values]
+    Xs = np.linspace(start=0, stop=10, num=len(Ys))
+
+    _Xs = np.array(Xs).reshape(-1, 1)
+    _Ys = np.array(Ys).reshape(-1, 1)
+
+    ransac = RANSACRegressor()
+    ransac.fit(_Xs, _Ys)
+
+    # print(ransac.estimator_.coef_, ransac.estimator_.intercept_)
+    # plt.plot(_Xs, ransac.predict(_Xs))
+    # plt.plot(_Xs, _Ys)
+    # plt.show()
+
+    return ransac.estimator_.intercept_[0]
 
 # Data Types
 

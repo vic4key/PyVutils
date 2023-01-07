@@ -6,6 +6,10 @@ import sys, cv2, imutils
 import numpy as np
 import random as rd
 
+from multipledispatch import dispatch
+
+from .Math import *
+
 # ---
 
 CV_COLOR = cv2.IMREAD_COLOR
@@ -95,6 +99,12 @@ def draw_text(image, x, y, text, scale = 1.0, color = DEFAULT_COLOR, thickness =
     cv2.putText(image, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX, scale, color, 1, cv2.LINE_8)
     return
 
+@dispatch(np.ndarray, Point2D, Point2D)
+def draw_line(image, p1: Point2D, p2: Point2D, color = DEFAULT_COLOR, thickness = 1):
+    cv2.line(image, p1.to_tuple(ValueType.Integer), p2.to_tuple(ValueType.Integer), color, thickness)
+    return
+
+@dispatch(np.ndarray, int, int, int, int)
 def draw_line(image, x1, y1, x2, y2, color = DEFAULT_COLOR, thickness = 1):
     cv2.line(image, (x1, y1), (x2, y2), color, thickness)
     return

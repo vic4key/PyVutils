@@ -1,8 +1,10 @@
 imutils
 matplotlib
 mechanize
+multipledispatch
 numpy
+opencv_python
 pydicom
+pywin32
 requests
 win32security
-opencv-python

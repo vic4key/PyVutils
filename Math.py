@@ -4,6 +4,7 @@
 
 import math
 import numpy as np
+from enum import Enum
 
 # ---
 
@@ -34,3 +35,174 @@ def linear_regression(xs, ys):
     a = mean_y - b * mean_x   # α = Fxᵢ - βxᵢ (xᵢ & yᵢ here are mean of x & y)
 
     return (a, b) # α & β
+
+# Data Types
+
+class AngleUnit(Enum):
+  RAD = 0
+  DEG = 1
+
+class ValueType(Enum):
+  Float = 1
+  Integer = 2
+
+ValueTypeMapping = {
+  ValueType.Float: float,
+  ValueType.Integer: int,
+}
+
+# Point
+
+class Point:
+  '''The class for point object
+  Point(point)
+  Point(x, y)
+  Point(x, y, z)
+  '''
+
+  x = 0
+  y = 0
+  z = 0
+
+  def __init__(self, *args):
+    len_args = len(args)
+    if len_args == 1: # point
+      point  = args[0]
+      self.x = point.x
+      self.y = point.y
+      self.z = point.z
+    elif len_args == 2:  # Point2D(x, y)
+      x, y, z, = *args, 0
+      self.x = x
+      self.y = y
+      self.z = z
+    elif len_args == 3:  # Point(x, y, z)
+      x, y, z, = args
+      self.x = x
+      self.y = y
+      self.z = z
+
+  def __repr__(self):
+    return f"Point({self.x:.3f}, {self.y:.3f}, {self.z:.3f})"
+
+  def __add__(self, point): # point: Point
+    return Vector(self.x + point.x, self.y + point.y, self.z + point.z)
+
+  def __iadd__(self, point): # point: Point
+    self.x += point.x
+    self.y += point.y
+    self.z += point.z
+    return self
+
+  def __sub__(self, point): # point: Point
+    return Vector(self.x - point.x, self.y - point.y, self.z - point.z)
+
+  def __isub__(self, point): # point: Point
+    self.x -= point.x
+    self.y -= point.y
+    self.z -= point.z
+    return self
+
+  def __mul__(self, value: int or float):
+    return Vector(self.x * value, self.y * value, self.z * value)
+
+  def __imul__(self, value: int or float):
+    self.x *= value
+    self.y *= value
+    self.z *= value
+    return self
+
+  def __div__(self, value: int or float):
+    return Vector(self.x / value, self.y / value, self.z / value)
+
+  def __idiv__(self, value: int or float):
+    self.x /= value
+    self.y /= value
+    self.z /= value
+    return self
+
+  def to_list(self, type: ValueType = None) -> list:
+    if type is None:
+      return [self.x, self.y, self.z]
+    else:
+      T = ValueTypeMapping.get(type)
+      return [T(self.x), T(self.y), T(self.z)]
+
+  def to_tuple(self, type: ValueType = None) -> tuple:
+    if type is None:
+      return (self.x, self.y, self.z)
+    else:
+      T = ValueTypeMapping.get(type)
+      return (T(self.x), T(self.y), T(self.z))
+
+  def distance_to(self, point) -> float:
+    return math.sqrt((self.x - point.x)**2 + (self.y - point.y)**2 + (self.z - point.z)**2)
+
+# Point2D
+
+class Point2D(Point):
+  '''The class for point-2d object
+  Point2D(Point)
+  Point2D(x, y)
+  '''
+  def __init__(self, *args):
+    super(Point2D, self).__init__(*args)
+    self.z = 0
+
+  def __repr__(self):
+    return f"Point2D({self.x:.3f}, {self.y:.3f})"
+
+  def to_list(self, type: ValueType = None) -> list:
+    if type is None:
+      return [self.x, self.y]
+    else:
+      T = ValueTypeMapping.get(type)
+      return [T(self.x), T(self.y)]
+
+  def to_tuple(self, type: ValueType = None) -> tuple:
+    if type is None:
+      return (self.x, self.y)
+    else:
+      T = ValueTypeMapping.get(type)
+      return (T(self.x), T(self.y))
+
+# Point3D
+
+class Point3D(Point):
+  '''The class for point-3d object
+  Point3D(point)
+  Point3D(x, y, z)
+  '''
+  def __init__(self, *args):
+    super(Point, self).__init__(*args)
+
+  def __repr__(self):
+    return f"Point3D({self.x:.3f}, {self.y:.3f}, {self.z:.3f})"
+
+# Vector
+
+class Vector(Point):
+  '''The class for vector object
+  '''
+  def __init__(self, *args):
+    super(Vector, self).__init__(*args)
+
+  def __repr__(self):
+    return f"Vector({self.x:.3f}, {self.y:.3f}, {self.z:.3f})"
+
+  def normalize(self):
+    d = self.length()
+    self.x /= d
+    self.y /= d
+    self.z /= d
+
+  def length(self) -> float:
+    return math.sqrt(self.x**2 + self.y**2 + self.z**2)
+
+  def dot(self, vec) -> float:
+    return self.x * vec.x + self.y * vec.y + self.z * vec.z
+
+  def angle_between(self, vec, unit=AngleUnit.DEG) -> float:
+    a = math.acos(self.dot(vec) / (self.length() * vec.length()))
+    if unit == AngleUnit.DEG: a = math.degrees(a)
+    return a

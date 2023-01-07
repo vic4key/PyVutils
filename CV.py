@@ -93,7 +93,14 @@ def play_video(video_file_path, fn, window_title = "Sample", *args):
 
     return
 
-DEFAULT_COLOR = (0, 255, 0)
+COLOR_RED     = (0x00, 0x00, 0xFF)
+COLOR_GREEN   = (0x00, 0xFF, 0x00)
+COLOR_BLUE    = (0xFF, 0x00, 0x00)
+COLOR_PINK    = (0xFF, 0x00, 0xFF)
+COLOR_CYAN    = (0xFF, 0xFF, 0x00)
+COLOR_YELLOW  = (0x00, 0xFF, 0xFF)
+
+DEFAULT_COLOR = COLOR_GREEN
 
 def draw_text(image, x, y, text, scale = 1.0, color = DEFAULT_COLOR, thickness = 1) :
     cv2.putText(image, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX, scale, color, 1, cv2.LINE_8)

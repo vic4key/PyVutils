@@ -95,6 +95,10 @@ def draw_text(image, x, y, text, scale = 1.0, color = DEFAULT_COLOR, thickness =
     cv2.putText(image, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX, scale, color, 1, cv2.LINE_8)
     return
 
+def draw_line(image, x1, y1, x2, y2, color = DEFAULT_COLOR, thickness = 1):
+    cv2.line(image, (x1, y1), (x2, y2), color, thickness)
+    return
+
 def draw_rectangle(image, x, y, width, height, color = DEFAULT_COLOR, thickness = 1) :
     cv2.rectangle(image, (x, y), (x + width, y + height), color, thickness, cv2.LINE_8)
     return

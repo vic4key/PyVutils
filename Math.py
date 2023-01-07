@@ -38,10 +38,10 @@ def linear_regression(xs, ys):
 
     return (a, b) # α & β
 
-def find_representative_value_for_list_values(values: list, noise_filter: int):
+def find_representative_value_for_list_values(values: list, noise_filter: int = 1):
     '''
-    Use the RANSAC regression to find the representative of a list of values.
-    :param values: A list of distances
+    Use the RANSAC regression to find the representative value of a list of values.
+    :param values: A list of values
     :param noise_filter: The noise filter value
     :return: The representative value
     '''

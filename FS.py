@@ -49,13 +49,14 @@ def normalize_path(path, includedLastSlash = False):
 # ---
 
 # LS Recusive
-#
-# Eg. for a callback function
-# def fn(file_path, fileDirectory, fileName):
-#     print("`%s` - `%s` - `%s`" % (file_path, fileDirectory, fileName))
-#     return
-#
-# File.LSRecursive(R".", fn, ["txt"])
+
+''' Eg. for a callback function
+def fn(file_path, file_directory, file_name):
+    print("`%s` - `%s` - `%s`" % (file_path, file_directory, file_name))
+    return
+
+File.recursive_directory(".", fn, ["txt"])
+'''
 
 LSR_DEPTH_MAX = -1
 LSR_DEPTH_PARENT = 0

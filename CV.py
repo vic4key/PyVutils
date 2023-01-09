@@ -16,14 +16,14 @@ CV_COLOR = cv2.IMREAD_COLOR
 CV_GRAY  = cv2.IMREAD_GRAYSCALE
 CV_UNCHANGED = cv2.IMREAD_UNCHANGED
 
-def load_image(file_path, type = CV_COLOR) :
+def load_image(file_path, type = CV_COLOR):
     return cv2.imread(file_path, CV_COLOR)
 
-def save_image(file_path, image) :
+def save_image(file_path, image):
     cv2.imwrite(file_path, image)
     return
 
-def display_image(image, window_title = "Sample", forceExit = False) :
+def display_image(image, window_title = "Image", forceExit = False):
     cv2.namedWindow(window_title, cv2.WINDOW_AUTOSIZE)
     cv2.imshow(window_title, image)
     cv2.waitKey(0)
@@ -31,7 +31,7 @@ def display_image(image, window_title = "Sample", forceExit = False) :
     if forceExit : sys.exit(0)
     return
 
-def _video_capture(source, fn, window_title, *args) :
+def _video_capture(source, fn, window_title, *args):
     vkSpace     = 0x20 # Space
     vkEscape    = 0x1B # Esc
     vkReturn    = 0x0D # Enter
@@ -69,7 +69,7 @@ def _video_capture(source, fn, window_title, *args) :
 
     return
 
-def webcam(fn, window_title = "Sample", *args):
+def webcam(fn, window_title = "Webcam", *args):
 
     if type(fn).__name__ != "function" or fn.__code__.co_argcount != 2 :
         msg  = "fn` argument must be a callback function"
@@ -81,7 +81,7 @@ def webcam(fn, window_title = "Sample", *args):
 
     return
 
-def play_video(video_file_path, fn, window_title = "Sample", *args):
+def play_video(video_file_path, fn, window_title = "Video", *args):
 
     if type(fn).__name__ != "function" or fn.__code__.co_argcount != 2 :
         msg  = "fn` argument must be a callback function"
@@ -93,6 +93,8 @@ def play_video(video_file_path, fn, window_title = "Sample", *args):
 
     return
 
+COLOR_BLACK   = (0x00, 0x00, 0x00)
+COLOR_WHITE   = (0xFF, 0xFF, 0xFF)
 COLOR_RED     = (0x00, 0x00, 0xFF)
 COLOR_GREEN   = (0x00, 0xFF, 0x00)
 COLOR_BLUE    = (0xFF, 0x00, 0x00)
@@ -102,7 +104,7 @@ COLOR_YELLOW  = (0x00, 0xFF, 0xFF)
 
 DEFAULT_COLOR = COLOR_GREEN
 
-def draw_text(image, x, y, text, scale = 1.0, color = DEFAULT_COLOR, thickness = 1) :
+def draw_text(image, x, y, text, scale = 1.0, color = DEFAULT_COLOR, thickness = 1):
     cv2.putText(image, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX, scale, color, 1, cv2.LINE_8)
     return
 
@@ -116,27 +118,20 @@ def draw_line(image, x1, y1, x2, y2, color = DEFAULT_COLOR, thickness = 1):
     cv2.line(image, (x1, y1), (x2, y2), color, thickness)
     return
 
-def draw_rectangle(image, x, y, width, height, color = DEFAULT_COLOR, thickness = 1) :
+def draw_rectangle(image, x, y, width, height, color = DEFAULT_COLOR, thickness = 1):
     cv2.rectangle(image, (x, y), (x + width, y + height), color, thickness, cv2.LINE_8)
     return
 
-# shape : image.shape or [width, height, nChannel]
-# color : 255 -> white or 0 -> black
-def create_blank_image(shape, color = 255) :
+# shape = [width, height, channel] eg. [480, 280, 3]
+def create_blank_image(shape, color = COLOR_WHITE):
     image = np.zeros(shape, np.uint8)
     image[:,:,] = color
     return image
 
-# shape = [width, height, 3]
-def create_blank_bgr_image(shape, color = (255, 255, 255)) :
-    image = np.zeros(shape, np.uint8)
-    image[:,:,] = color
-    return image
-
-def to_gray_image(bgr_image) :
+def to_gray_image(bgr_image):
     return cv2.cvtColor(bgr_image, cv2.COLOR_BGR2GRAY)
 
-def to_hsv_image(bgr_image) :
+def to_hsv_image(bgr_image):
     return cv2.cvtColor(bgr_image, cv2.COLOR_BGR2HSV)
 
 def normalize_image(image):
@@ -146,12 +141,12 @@ def conv_2d(image, kernel):
     return cv2.filter2D(image, -1, kernel)
 
 # https://docs.opencv.org/3.4.0/da/d54/group__imgproc__transform.html#ga47a974309e9102f5f08231edc7e7529d
-def scale_mage_by_ratio(image, scale, method = cv2.INTER_CUBIC) :
+def scale_mage_by_ratio(image, scale, method = cv2.INTER_CUBIC):
     return cv2.resize(image, None, fx = scale, fy = scale, interpolation = method)
 
 # aspect_ratio = True : The image will be scaled following `width` or `height` if only pass one of them.
 # It means `width` or `height` is auto calculating by one of them.
-def scale_image(image, width = None, height = None, aspect_ratio = True, method = cv2.INTER_CUBIC) :
+def scale_image(image, width = None, height = None, aspect_ratio = True, method = cv2.INTER_CUBIC):
 
     if width is None and height is None : return image
 
@@ -171,7 +166,7 @@ def scale_image(image, width = None, height = None, aspect_ratio = True, method 
 
     return cv2.resize(image, None, fx = scaleX, fy = scaleY, interpolation = method)
 
-def create_image_mask_by_color_from_hsv_image(hsv_image, color, delta = 10) :
+def create_image_mask_by_color_from_hsv_image(hsv_image, color, delta = 10):
 
     b, g, r = color
 
@@ -185,7 +180,7 @@ def create_image_mask_by_color_from_hsv_image(hsv_image, color, delta = 10) :
     return mask
 
 
-def create_image_mask_by_color(bgr_image, color, delta = 10, invert_mask = True) :
+def create_image_mask_by_color(bgr_image, color, delta = 10, invert_mask = True):
     hsv = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2HSV)
 
     mask = ocvCreateImageMaskByColorFromHsvImage(hsv, color, delta)
@@ -193,7 +188,7 @@ def create_image_mask_by_color(bgr_image, color, delta = 10, invert_mask = True)
 
     return mask
 
-def create_image_mask_by_colors(bgr_image, colors, delta = 10, invert_mask = True) :
+def create_image_mask_by_colors(bgr_image, colors, delta = 10, invert_mask = True):
 
     hsv = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2HSV)
 
@@ -225,7 +220,7 @@ def random_rgb_pixel(low = 0, high = 255):
 
 # https://docs.opencv.org/3.4.0/d3/dc0/group__imgproc__shape.html#ga819779b9857cc2f8601e6526a3a5bc71
 # method: cv.RETR_EXTERNAL, cv.RETR_LIST, cv.RETR_CCOMP, cv.RETR_TREE, cv.RETR_FLOODFILL
-def find_contours(image_gray, mode = cv2.RETR_TREE, method = cv2.CHAIN_APPROX_SIMPLE) :
+def find_contours(image_gray, mode = cv2.RETR_TREE, method = cv2.CHAIN_APPROX_SIMPLE):
     contours = cv2.findContours(image_gray.copy(), mode, method)
     contours = contours[0] if imutils.is_cv2() else contours[1]
     return contours

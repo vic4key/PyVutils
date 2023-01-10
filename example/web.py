@@ -17,3 +17,12 @@ browser["form-register-user"] = "PyVutils"
 browser["form-register-pass"] = "PyVutils@123456"
 response = browser.submit()
 print("status code =", response.code)
+
+'''
+Registration
+<GET https://cold-dream-9470.bss.design application/x-www-form-urlencoded
+  <TextControl(form-register-user=)>
+  <PasswordControl(form-register-pass=)>
+  <SubmitButtonControl(<None>=) (readonly)>>
+status code = 200
+'''

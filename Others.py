@@ -23,7 +23,7 @@ def log_exception(obj) :
         frames.insert(idx, "BuitinError: " + exception)
     pass
 
-    frameNumber = 0
+    frame_number = 0
 
     for frame in frames:
         frame = frame.strip()
@@ -31,13 +31,13 @@ def log_exception(obj) :
         if frame.find("File \"") == 0 :
             info = frame.split(",")
             if len(info) :
-                frameNumber += 1
-                fileName, lineNumber, funcName = info
+                frame_number += 1
+                fileName, line_number, func_name = info
                 print("%d. '%s' %s at %s : " % (
-                    frameNumber,
+                    frame_number,
                     FS.extract_file_name(fileName.strip())[:-1],
-                    funcName.strip(),
-                    lineNumber.strip(),
+                    func_name.strip(),
+                    line_number.strip(),
                 ))
             pass
         else :

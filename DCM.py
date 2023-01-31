@@ -17,7 +17,7 @@ def load_dicom_directory(pattern, extensions = [], force=True):
             list_ds.append(load_dicom(file_path, force))
         except: print(f"Error when loading '{file_path}'")
         return
-    File.recursive_directory(pattern, callback, extensions)
+    FS.recursive_directory(pattern, callback, extensions)
 
     dict_series = {}
     if len(list_ds) > 0:

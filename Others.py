@@ -35,7 +35,7 @@ def log_exception(obj) :
                 fileName, lineNumber, funcName = info
                 print("%d. '%s' %s at %s : " % (
                     frameNumber,
-                    File.extract_file_name(fileName.strip())[:-1],
+                    FS.extract_file_name(fileName.strip())[:-1],
                     funcName.strip(),
                     lineNumber.strip(),
                 ))

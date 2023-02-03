@@ -14,9 +14,9 @@ IF EXIST "%PyVutils%" (
 
 ECHO ---
 ECHO.
-FOR %%I IN ("%~dp0.") DO FOR %%J IN ("%%~dpI.") DO SET VU_DIR=%%~dpnxJ\
-ECHO Add/Update Enviroment `PyVutils` -^> `%VU_DIR%`
-rem SETX PyVutils %VU_DIR%
+FOR %%I IN ("%~dp0.") DO FOR %%J IN ("%%~dpI.") DO SET VU_DIR=%%~dpnxJ\%VU_NAME%\
+ECHO Add/Update Enviroment `%VU_NAME%` -^> `%VU_DIR%`
+SETX PyVutils %VU_DIR%
 ECHO.
 
 ECHO ---
@@ -27,7 +27,7 @@ ECHO.
 
 ECHO ---
 ECHO.
-pip3 install -r requirements.txt
+pip3 install -r %VU_NAME%\requirements.txt
 ECHO.
 
 ECHO ---

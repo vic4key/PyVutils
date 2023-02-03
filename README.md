@@ -8,7 +8,7 @@ PyVutils or Vic Utilities for Python (not a wrapper of [Vutils](https://github.c
 
 ## Installation
 
-* Just run the batch file `Setup.CMD` to get it done
+`pip install git+https://github.com/vic4key/PyVutils.git`
 
 ## Usage
 

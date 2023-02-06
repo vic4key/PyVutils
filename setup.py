@@ -1,5 +1,9 @@
 from setuptools import setup, find_namespace_packages
 
+install_requires = []
+with open("PyVutils/requirements.txt") as f: install_requires = f.read().split("\n")
+install_requires = list(filter(lambda e: len(e) > 0, install_requires))
+
 setup(
     name="PyVutils",
     version="1.0",
@@ -14,7 +18,7 @@ setup(
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
     ],
-    install_requires=[],
+    install_requires=install_requires,
     include_package_data=True,
     package_data={},
 )

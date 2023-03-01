@@ -28,22 +28,28 @@ def log_file(file_path, text):
 
 # ---
 
-def extract_file_directory(file_path): return os.path.split(file_path)[0]
+def extract_file_directory(file_path, included_last_slash = True):
+    result = os.path.split(file_path)[0]
+    if included_last_slash: result += os.path.sep
+    return result
 
-def extract_file_name(file_path): return os.path.split(file_path)[1]
+def extract_file_name(file_path, included_extension = True):
+    result = os.path.basename(file_path)
+    if not included_extension: result = os.path.splitext(result)[0]
+    return result
 
 def extract_file_extension(file_path, included_dot = False):
-    s = os.path.splitext(file_path)[1]
-    if not included_dot : s = s[1:]
-    return s
+    result = os.path.splitext(file_path)[1]
+    if not included_dot : result = result[1:]
+    return result
 
-def is_file_e_exists(file_path): return os.path.isfile(file_path)
+def is_file_exists(file_path): return os.path.isfile(file_path)
 
 def is_directory_exists(directory): return os.path.isdir(directory)
 
-def normalize_path(path, includedLastSlash = False):
+def normalize_path(path, included_last_slash = True):
     s = path.replace("\\\\", os.path.sep).replace("\\", os.path.sep).replace("//", os.path.sep).replace("/", os.path.sep)
-    if includedLastSlash: s += os.path.sep
+    if included_last_slash: s += os.path.sep
     return s
 
 # ---

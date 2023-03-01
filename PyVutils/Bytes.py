@@ -3,6 +3,7 @@
 # Vutils for Bytes
 
 import ctypes, math
+from enum import Enum
 
 # ---
 
@@ -60,4 +61,24 @@ qword = lambda number : extract_bytes(number, 8)
 
 # ---
 
-def ParseStructure(pointer, struct) : return parse_structure(pointer, struct)
+# def ParseStructure(pointer, struct) : return parse_structure(pointer, struct)
+
+class PEFormat(int, Enum):
+    UNKNOWN = -1
+    WIN     = 0
+    LINUX   = 1
+    MACHO   = 2
+
+def determine_pe_format(file_path: str) -> PEFormat:
+    result = PEFormat.UNKNOWN
+    try:
+      with open(file_path, "rb") as f:
+        data = f.read(7)
+        if data.startswith(bytearray.fromhex("4D5A90")):     # MZ
+          result = PEFormat.WIN
+        elif data.startswith(bytearray.fromhex("7F454C46")): # ELF
+          result = PEFormat.LINUX
+        elif data.startswith(bytearray.fromhex("CFFAEDFE")): # Mach-O
+          result = PEFormat.MACHO
+    except Exception as e: print(e)
+    return result

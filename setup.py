@@ -1,7 +1,11 @@
+import os
 from setuptools import setup, find_namespace_packages
 
 install_requires = []
-with open("PyVutils/requirements.txt") as f: install_requires = f.read().split("\n")
+requirements_txt = ""
+if os.name == "nt": requirements_txt = "PyVutils/requirements.txt"
+else: requirements_txt = "PyVutils/requirements_posix.txt"
+with open(requirements_txt) as f: install_requires = f.read().split("\n")
 install_requires = list(filter(lambda e: len(e) > 0, install_requires))
 
 setup(

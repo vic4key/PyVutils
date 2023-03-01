@@ -1,0 +1,10 @@
+imutils
+matplotlib
+mechanize
+multipledispatch
+numpy
+opencv_python
+pycaw
+pydicom
+requests
+scikit_learn

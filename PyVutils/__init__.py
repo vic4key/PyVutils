@@ -26,6 +26,8 @@ __all__ =\
     "Utils",
 ]
 
+import os
+
 # import PyVutils as vu
 
 from .Bytes import *
@@ -37,7 +39,10 @@ from .Math import *
 from .Network import *
 from .Others import *
 from .Process import *
-from .Sound import *
 from .Text import *
 from .Thread import *
 from .Utils import *
+
+if os.name == "nt":
+    from .Sound import *
+    from .Windows import *

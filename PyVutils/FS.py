@@ -33,7 +33,7 @@ def extract_file_directory(file_path): return os.path.split(file_path)[0]
 def extract_file_name(file_path): return os.path.split(file_path)[1]
 
 def extract_file_extension(file_path, included_dot = False):
-    s = os.path.splitext(file_ppath)[1]
+    s = os.path.splitext(file_path)[1]
     if not included_dot : s = s[1:]
     return s
 
@@ -71,8 +71,8 @@ def recursive_directory(directory, fn, extensions = [], depth = LSR_DEPTH_MAX):
 
     LSR_DEPTH_CURRENT += 1
 
-    uExtensions = []
-    if len(extensions): uExtensions = list(map(lambda extension : extension.upper(), extensions))
+    list_extensions = []
+    if len(extensions): list_extensions = list(map(lambda extension : extension.upper(), extensions))
 
     pattern = os.path.join(directory, "*")
 
@@ -84,9 +84,9 @@ def recursive_directory(directory, fn, extensions = [], depth = LSR_DEPTH_MAX):
                 if not recursive_directory(file_path, fn, extensions, depth): break
             elif stat.S_ISREG(mode):
                 file_name = extract_file_name(file_path)
-                if len(uExtensions):
-                    fileExtension = extract_file_extension(file_path, False).upper()
-                    if fileExtension in uExtensions : fn(file_path, directory, file_name)
+                if len(list_extensions):
+                    extension = extract_file_extension(file_path, False).upper()
+                    if extension in list_extensions : fn(file_path, directory, file_name)
                 else : fn(file_path, directory, file_name)
             else : pass # Unknown file type
         except WindowsError as e : pass

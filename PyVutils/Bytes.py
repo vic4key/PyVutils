@@ -67,7 +67,7 @@ class FileFormat(int, Enum):
   UNKNOWN     = -1
   PE_WIN      = 0
   PE_LINUX    = 1
-  PE_MACHO    = 2
+  PE_MAC      = 2
 
 def determine_file_format(file_path: str) -> FileFormat:
   result = FileFormat.UNKNOWN
@@ -76,6 +76,6 @@ def determine_file_format(file_path: str) -> FileFormat:
       data = f.read(7)
       if   data.startswith(bytearray.fromhex("4D5A")): result = FileFormat.PE_WIN
       elif data.startswith(bytearray.fromhex("7F454C46")): result = FileFormat.PE_LINUX
-      elif data.startswith(bytearray.fromhex("CFFAEDFE")): result = FileFormat.PE_MACHO
+      elif data.startswith(bytearray.fromhex("CFFAEDFE")): result = FileFormat.PE_MAC
   except Exception as e: print(e)
   return result

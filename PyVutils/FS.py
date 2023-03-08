@@ -48,7 +48,7 @@ def is_file_exists(file_path): return os.path.isfile(file_path)
 def is_directory_exists(directory): return os.path.isdir(directory)
 
 def normalize_path(path, included_last_slash = True):
-    s = path.replace("\\\\", os.path.sep).replace("\\", os.path.sep).replace("//", os.path.sep).replace("/", os.path.sep)
+    s = path.replace("\\", os.path.sep).replace("//", os.path.sep).replace("/", os.path.sep)
     if included_last_slash: s += os.path.sep
     return s
 

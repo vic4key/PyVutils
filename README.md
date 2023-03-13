@@ -44,7 +44,7 @@ for form in browser.forms():
 def callback(file_path, file_directory, file_name):
     print("`%s` - `%s` - `%s`" % (file_path, file_directory, file_name))
 
-vu.recursive_directory(".", fn, ["txt"])
+vu.recursive_directory(".", callback, ["txt"])
 
 # others
 

@@ -200,7 +200,7 @@ class Point3D(Point):
   Point3D(x, y, z)
   '''
   def __init__(self, *args):
-    super(Point, self).__init__(*args)
+    super(Point3D, self).__init__(*args)
 
   def __repr__(self):
     return f"Point3D({self.x:.3f}, {self.y:.3f}, {self.z:.3f})"

@@ -2,7 +2,7 @@
 
 # Vutils for DICOM
 
-import pydicom, glob
+import pydicom
 import numpy as np
 from . import FS
 

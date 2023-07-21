@@ -2,7 +2,7 @@
 
 # Vutils for File/Directory
 
-import os, stat, glob, re
+import os, stat, glob
 
 from . import Utils
 

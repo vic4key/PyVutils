@@ -2,7 +2,7 @@
 
 # Vutils for Utils
 
-import ctypes, functools, time
+import ctypes, time
 
 # ---
 

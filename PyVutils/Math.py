@@ -10,6 +10,29 @@ from sklearn.linear_model import RANSACRegressor
 
 # ---
 
+# 2D
+
+def point_to_index_2d(p, ncol):
+	x, y = p
+	return y + x * ncol
+
+def index_to_point_2d(index, ncol):
+	x, y = divmod(index, ncol)
+	return (x, y)
+
+# 3D
+
+def index_to_point_3d(index, nrow, ncol):
+	z, _ = divmod(index, nrow * ncol)
+	x, y = divmod(_, ncol)
+	return (x, y, z)
+
+def point_to_index_3d(p, nrow, ncol):
+	x, y, z = p
+	return y + x * ncol + z * nrow * ncol
+
+# ---
+
 def linear_regression(xs, ys):
 
     # Fx  = βx + α

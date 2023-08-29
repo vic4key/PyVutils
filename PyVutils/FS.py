@@ -109,7 +109,14 @@ def determine_encoding(file_path):
     f.close()
     return Utils.determine_text_encoding(data)
 
-def clean_file_name(file_name):
-    invalid = '<>:"/\|?*+'
-    for char in invalid: file_name = file_name.replace(char, '')
+FILE_NAME_FORBIDDEN_CHARS = "\\/:?\"<>|"
+
+def correct_file_name(file_name: str, replacement_char = '-'):
+    for char in FILE_NAME_FORBIDDEN_CHARS: file_name = file_name.replace(char, replacement_char)
     return file_name
+
+def is_file_name_valid(file_name: str):
+    for char in FILE_NAME_FORBIDDEN_CHARS:
+        if file_name.find(char) != -1:
+            return False
+    return True

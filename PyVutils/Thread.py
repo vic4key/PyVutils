@@ -134,11 +134,12 @@ class Pool:
 #     result = pool.Launch()
 #     print(result)
 
-import sys, trace
-from threading import Thread
+import sys, time, _thread, trace
+from threading import Thread, Timer
 
 class StoppableThread(Thread):
-	""" A class that represents a stoppable thread of control.
+	"""
+    A class that represents a stoppable thread of control.
     def run(*args): pass
 	thread = StoppableThread(target=run)
 	thread.start()
@@ -175,3 +176,64 @@ class StoppableThread(Thread):
 			if why == "line":
 				raise SystemExit()
 		return self.local_trace
+
+class LoopingThread(object):
+    '''
+    Create a thread that running with a looping function
+    '''
+    m_interval = 0
+    m_running  = False
+    m_locking  = None
+    m_callback = None
+
+    def __init__(self, callback, interval = 0.01, *args, **kwargs): # 10ms
+        assert type(callback).__name__ == "function", "The callback must be a function"
+        self.m_callback = callback
+        self.m_interval = interval
+        self.m_args     = args
+        self.m_kwargs   = kwargs
+        self.m_running  = False
+        self.m_locking  = _thread.allocate_lock()
+
+    def start(self):
+        self.m_running = True
+        _thread.start_new_thread(LoopingThread.function, (self,))
+
+    def stop(self):
+        self.m_running = False
+
+    @staticmethod
+    def function(self):
+        while self.m_running:
+            self.m_locking.acquire()
+            self.m_callback(*self.m_args, **self.m_kwargs)
+            self.m_locking.release()
+            time.sleep(self.m_interval)
+
+class LoopingTimer(object):
+    '''
+    Create a timer that running with a looping function
+    '''
+    def __init__(self, callback, interval, *args, **kwargs):
+        self.m_args     = args
+        self.m_kwargs   = kwargs
+        self.m_timer    = None
+        self.m_running  = False
+        self.m_interval = interval
+        self.m_callback = callback
+        self.start()
+
+    def _run(self):
+        self.m_running = False
+        self.start()
+        self.m_callback(*self.m_args, **self.m_kwargs)
+
+    def start(self):
+        if not self.m_running:
+            self.m_timer = Timer(self.m_interval, self._run)
+            self.m_timer.start()
+            self.m_running = True
+
+    def stop(self):
+        self.m_timer.cancel()
+        self.m_running = False

@@ -2,11 +2,10 @@
 
 # Vutils for Windows
 
-import win32api, win32security
-
 # ---
 
 def adjust_privileges(privileges, enable=True):
+    import win32api, win32security
     # https://docs.microsoft.com/en-us/windows/win32/secauthz/privilege-constants
     flags = win32security.TOKEN_ADJUST_PRIVILEGES | win32security.TOKEN_QUERY
     token = win32security.OpenProcessToken(win32api.GetCurrentProcess(), flags)

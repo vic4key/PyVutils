@@ -1,4 +1,4 @@
-import sys, os, threading
+import sys, threading
 from multiprocessing import cpu_count
 
 if sys.version_info >= (3, 0): from queue import Queue

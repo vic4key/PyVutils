@@ -1,13 +1,13 @@
 # https://learn.microsoft.com/en-us/windows/win32/api/endpointvolume/
 
 from ctypes import cast, POINTER
-from comtypes import CLSCTX_ALL
-from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 
 class Speaker:
     '''System Speaker
     '''
     def __init__(self):
+        from comtypes import CLSCTX_ALL
+        from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
         self.m_devices = AudioUtilities.GetSpeakers()
         self.m_interface = self.m_devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
         self.m_speaker = cast(self.m_interface, POINTER(IAudioEndpointVolume))

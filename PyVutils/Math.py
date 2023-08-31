@@ -6,8 +6,6 @@ import math
 import numpy as np
 from enum import Enum
 
-from sklearn.linear_model import RANSACRegressor
-
 # ---
 
 # 2D
@@ -68,6 +66,8 @@ def find_representative_value_for_list_values(values: list, noise_filter: int = 
     :param noise_filter: The noise filter value
     :return: The representative value
     '''
+
+    from sklearn.linear_model import RANSACRegressor
 
     Ys = [v // noise_filter * noise_filter for v in values]
     Xs = np.linspace(start=0, stop=10, num=len(Ys))

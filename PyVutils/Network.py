@@ -4,11 +4,6 @@
 
 import os, mechanize
 
-try:
-    import cookielib
-except ImportError:
-    import http.cookiejar as cookielib
-
 # ---
 
 # https://mechanize.readthedocs.io/en/latest/
@@ -22,6 +17,11 @@ except ImportError:
 class WebBrowser(mechanize.Browser):
     def __init__(self, headers = {}, debug=False, robots=True, redirect=True, referer=True, equiv=True, cookie_file_path=""):
         super(WebBrowser, self).__init__()
+
+        try:
+            import cookielib
+        except ImportError:
+            import http.cookiejar as cookielib
 
         cookiejar = cookielib.LWPCookieJar()
         self.set_cookiejar(cookiejar)

@@ -58,14 +58,10 @@ cache = lru_cache(maxsize=None)
 
 def __display_hook_hexify(item):
     type_name = type(item).__name__
-    if type_name == "bool":
-        print(item)
-    elif type_name in ["int", "long"]:
-        print("0x%X" % item)
-    elif type_name == "NoneType":
-        print(repr(item))
-    else:
-        pass
+    if   type_name == "bool": print(item)
+    elif type_name in ["int", "long"]: print("0x%X" % item)
+    elif type_name != "NoneType": print(repr(item))
+    else: pass
 
 __sys_displayhook = None
 

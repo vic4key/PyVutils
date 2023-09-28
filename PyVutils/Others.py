@@ -55,3 +55,26 @@ def log_exception(obj) :
 
 from functools import lru_cache
 cache = lru_cache(maxsize=None)
+
+def __display_hook_hexify(item):
+    type_name = type(item).__name__
+    if type_name == "bool":
+        print(item)
+    elif type_name in ["int", "long"]:
+        print("0x%X" % item)
+    elif type_name == "NoneType":
+        print(repr(item))
+    else:
+        pass
+
+__sys_displayhook = None
+
+def console_hexify(enabled = True):
+    global __sys_displayhook
+    import sys
+    if enabled:
+        __sys_displayhook = sys.displayhook
+        sys.displayhook = __display_hook_hexify
+    elif not __sys_displayhook is None:
+        sys.displayhook = __sys_displayhook
+        __sys_displayhook = None

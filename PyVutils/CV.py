@@ -5,12 +5,14 @@
 import sys, cv2, imutils
 import numpy as np
 import random as rd
-
+from typing import Union
 from multipledispatch import dispatch
 
 from .Math import *
 
 # ---
+
+point_2d = Union[Point2D, tuple]
 
 CV_COLOR = cv2.IMREAD_COLOR
 CV_GRAY  = cv2.IMREAD_GRAYSCALE
@@ -106,21 +108,29 @@ DEFAULT_COLOR = COLOR_GREEN
 
 def draw_text(image, x, y, text, scale = 1.0, color = DEFAULT_COLOR, thickness = 1):
     cv2.putText(image, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX, scale, color, 1, cv2.LINE_8)
-    return
 
-@dispatch(np.ndarray, Point2D, Point2D)
-def draw_line(image, p1: Point2D, p2: Point2D, color = DEFAULT_COLOR, thickness = 1):
-    cv2.line(image, p1.to_tuple(ValueType.Integer), p2.to_tuple(ValueType.Integer), color, thickness)
-    return
+def draw_line(image, p1: point_2d, p2: point_2d, color: tuple = DEFAULT_COLOR, thickness: int = 1):
+    if type(p1) is Point2D: p1 = p1.to_tuple(ValueType.Integer)
+    if type(p2) is Point2D: p2 = p2.to_tuple(ValueType.Integer)
+    cv2.line(image, p1, p2, color, thickness)
 
-@dispatch(np.ndarray, int, int, int, int)
-def draw_line(image, x1, y1, x2, y2, color = DEFAULT_COLOR, thickness = 1):
-    cv2.line(image, (x1, y1), (x2, y2), color, thickness)
-    return
+# @dispatch(np.ndarray, int, int, int, int, tuple, int)
+# def draw_line(image, x1, y1, x2, y2, color: tuple = DEFAULT_COLOR, thickness: int = 1):
+#     cv2.line(image, (x1, y1), (x2, y2), color, thickness)
 
 def draw_rectangle(image, x, y, width, height, color = DEFAULT_COLOR, thickness = 1):
     cv2.rectangle(image, (x, y), (x + width, y + height), color, thickness, cv2.LINE_8)
-    return
+
+def draw_marker(image, point: point_2d, size: int = 5, color: tuple = DEFAULT_COLOR, thickness: int = 1):
+    if type(point) is tuple: x, y = point
+    elif type(point) is Point2D: x, y = point.x, point.y
+    p1 = Point2D(x - size, y - size)
+    p2 = Point2D(x + size, y + size)
+    p3 = Point2D(x + size, y - size)
+    p4 = Point2D(x - size, y + size)
+    draw_line(image, p1, p2, color, thickness)
+    draw_line(image, p3, p4, color, thickness)
+    # draw_line(image, x + size, y - size, x + size, y + size, color, thickness)
 
 # shape = [width, height, channel] eg. [480, 280, 3]
 def create_blank_image(shape, color = COLOR_WHITE):
@@ -183,7 +193,7 @@ def create_image_mask_by_color_from_hsv_image(hsv_image, color, delta = 10):
 def create_image_mask_by_color(bgr_image, color, delta = 10, invert_mask = True):
     hsv = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2HSV)
 
-    mask = ocvCreateImageMaskByColorFromHsvImage(hsv, color, delta)
+    mask = create_image_mask_by_color_from_hsv_image(hsv, color, delta)
     if invert_mask : mask = cv2.bitwise_not(mask)
 
     return mask
@@ -195,7 +205,7 @@ def create_image_mask_by_colors(bgr_image, colors, delta = 10, invert_mask = Tru
     masks = None
 
     for color in colors :
-        mask = ocvCreateImageMaskByColorFromHsvImage(hsv, color, delta)
+        mask = create_image_mask_by_color_from_hsv_image(hsv, color, delta)
         if masks is None : masks = mask
         else : masks = cv2.add(masks, mask)
     pass
@@ -228,7 +238,6 @@ def find_contours(image_gray, mode = cv2.RETR_TREE, method = cv2.CHAIN_APPROX_SI
 # thickness: 0, cv2.FILLED
 def draw_contour(image, contour, color = (0, 255, 0), thickness = 1):
     cv2.drawContours(image, [contour], -1, color, thickness)
-    return
 
 def extract_features(rgb_image, vector_size=32):
     try:

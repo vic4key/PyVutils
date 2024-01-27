@@ -106,8 +106,9 @@ COLOR_YELLOW  = (0x00, 0xFF, 0xFF)
 
 DEFAULT_COLOR = COLOR_GREEN
 
-def draw_text(image, x, y, text, scale = 1.0, color = DEFAULT_COLOR, thickness = 1):
-    cv2.putText(image, text, (x, y), cv2.FONT_HERSHEY_SIMPLEX, scale, color, 1, cv2.LINE_8)
+def draw_text(image, p, text, scale = 1.0, color = DEFAULT_COLOR, thickness = 1):
+    if type(p) is Point2D: p = p.to_tuple(ValueType.Integer)
+    cv2.putText(image, text, p, cv2.FONT_HERSHEY_SIMPLEX, scale, color, thickness, cv2.LINE_8)
 
 def draw_line(image, p1: point_2d, p2: point_2d, color: tuple = DEFAULT_COLOR, thickness: int = 1):
     if type(p1) is Point2D: p1 = p1.to_tuple(ValueType.Integer)

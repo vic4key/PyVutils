@@ -120,3 +120,24 @@ def is_file_name_valid(file_name: str):
         if file_name.find(char) != -1:
             return False
     return True
+
+def pickle_save(file_path: str, object) -> bool:
+    try:
+        import pickle
+        with open(file_path, "wb") as f:
+            pickle.dump(object, f)
+    except Exception as e:
+        print(e)
+        return False
+    return True
+
+def pickle_load(file_path: str):
+    object = None
+    try:
+        import pickle
+        with open(file_path, "rb") as f:
+            object = pickle.load(f)
+    except Exception as e:
+        print(e)
+        return None
+    return object

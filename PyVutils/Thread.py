@@ -1,4 +1,5 @@
 import sys, threading
+import sched, time
 from multiprocessing import cpu_count
 
 if sys.version_info >= (3, 0): from queue import Queue
@@ -138,44 +139,44 @@ import sys, time, _thread, trace
 from threading import Thread, Timer
 
 class StoppableThread(Thread):
-	"""
+    """
     A class that represents a stoppable thread of control.
     def run(*args): pass
-	thread = StoppableThread(target=run)
-	thread.start()
-	do something
-	thread.stop()
-	"""
+    thread = StoppableThread(target=run)
+    thread.start()
+    do something
+    thread.stop()
+    """
 
-	def __init__(self, *args, **keywords):
-		Thread.__init__(self, *args, **keywords)
-		self.m_killed = False
+    def __init__(self, *args, **keywords):
+        Thread.__init__(self, *args, **keywords)
+        self.m_killed = False
 
-	def start(self):
-		self.__run_backup = self.run
-		self.run = self.__run
-		Thread.start(self)
+    def start(self):
+        self.__run_backup = self.run
+        self.run = self.__run
+        Thread.start(self)
 
-	def stop(self):
-		self.m_killed = True
+    def stop(self):
+        self.m_killed = True
 
-	def __run(self):
-		# PYDEV DEBUGGER WARNING: sys.settrace() should not be used when the debugger is being used.
-		# sys.settrace(self.globaltrace)
-		self.__run_backup()
-		self.run = self.__run_backup
+    def __run(self):
+        # PYDEV DEBUGGER WARNING: sys.settrace() should not be used when the debugger is being used.
+        # sys.settrace(self.globaltrace)
+        self.__run_backup()
+        self.run = self.__run_backup
 
-	def global_trace(self, frame, why, arg):
-		if why == "call":
-			return self.local_trace
-		else:
-			return None
+    def global_trace(self, frame, why, arg):
+        if why == "call":
+            return self.local_trace
+        else:
+            return None
 
-	def local_trace(self, frame, why, arg):
-		if self.m_killed:
-			if why == "line":
-				raise SystemExit()
-		return self.local_trace
+    def local_trace(self, frame, why, arg):
+        if self.m_killed:
+            if why == "line":
+                raise SystemExit()
+        return self.local_trace
 
 class LoopingThread(object):
     '''
@@ -237,3 +238,46 @@ class LoopingTimer(object):
     def stop(self):
         self.m_timer.cancel()
         self.m_running = False
+
+
+
+def __create_interval_timer(interval, func):
+    '''
+    Create a timer that runs a task at a regular interval in its own thread.
+    '''
+    scheduler = sched.scheduler(time.time, time.sleep)
+    def scheduled_task():
+        func()
+        scheduler.enter(interval, 1, scheduled_task, ())
+    scheduler.enter(delay=interval, priority=1, action=scheduled_task, argument=())
+    scheduler.run()
+
+__thread_timers = []
+
+def Timer(seconds):
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            thread_timer = threading.Thread(target=__create_interval_timer, args=(seconds, func), daemon=True).start()
+            global __thread_timers
+            __thread_timers.append(thread_timer)
+        return wrapper
+    return decorator
+
+'''
+import PyVutils as vu
+import time
+
+@vu.Timer(seconds=1)
+def timer_func_1():
+    print("timer_func_1 at", time.asctime())
+
+@vu.Timer(seconds=2)
+def timer_func_2():
+    print("timer_func_2 at", time.asctime())
+
+if __name__ == "__main__":
+    print("main started at", time.asctime())
+    timer_func_1()
+    timer_func_2()
+    time.sleep(7)
+'''

@@ -28,23 +28,22 @@ def profiling(fn):
 import pprint
 pp = pprint.PrettyPrinter(indent=2)
 
-def print(*args, **kwargs):
-  """
-  The pretty-formatted version of print(...) function.
-  Usage is same as print(...).
-  """
-  pp.pprint(*args, *kwargs)
+def pprint(object):
+    """
+    The pretty print that prints the given object to the console.
+    """
+    pp.pprint(object)
 
 OutputDebugString = ctypes.windll.kernel32.OutputDebugStringW
 
-def print_debug(*args, **kwargs):
-  """
-  Prints debug information for the given arguments and keyword arguments that using `OutputDebugString`.
+def dprint(*args, **kwargs):
+    """
+    Prints debug information for the given arguments and keyword arguments that using `OutputDebugString`.
 
-  Args:
-  - *args: Variable length argument list of any type.
-  - **kwargs: Arbitrary keyword arguments.
-  Returns: None.
-  """
-  print_string = " ".join(map(str, args))
-  OutputDebugString(print_string)
+    Args:
+    - *args: Variable length argument list of any type.
+    - **kwargs: Arbitrary keyword arguments.
+    Returns: None.
+    """
+    print_string = " ".join(map(str, args))
+    OutputDebugString(print_string)

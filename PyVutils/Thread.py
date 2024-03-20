@@ -1,5 +1,4 @@
 import sys, threading
-import sched, time
 from multiprocessing import cpu_count
 
 if sys.version_info >= (3, 0): from queue import Queue
@@ -240,6 +239,8 @@ class LoopingTimer(object):
         self.m_running = False
 
 
+
+import sched, time
 
 def __create_interval_timer(interval, func):
     '''

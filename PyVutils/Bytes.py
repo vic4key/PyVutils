@@ -4,6 +4,7 @@
 
 import ctypes, math
 from enum import Enum
+from struct import pack, unpack
 
 # ---
 
@@ -79,3 +80,49 @@ def determine_file_format(file_path: str) -> FileFormat:
       elif data.startswith(bytearray.fromhex("CFFAEDFE")): result = FileFormat.PE_MAC
   except Exception as e: print(e)
   return result
+
+# pack from int number to hex bytes
+
+def pack_8(number: int) -> bytes:
+  return pack("<B", number & 0xff)
+
+def pack_16(number: int) -> bytes:
+  return pack("<H", number & 0xffff)
+
+def pack_16be(number: int) -> bytes:
+  return pack(">H", number & 0xffff)
+
+def pack_32(number: int) -> bytes:
+  return pack("<I", number & 0xffffffff)
+
+def pack_32be(number: int) -> bytes:
+  return pack(">I", number & 0xffffffff)
+
+# unpack from hex bytes to int number
+
+def pack_64(number: int) -> bytes:
+  return pack("<Q", number & 0xffffffffffffffff)
+
+def pack_64be(number: int) -> bytes:
+  return pack(">Q", number & 0xffffffffffffffff)
+
+def unpack_8(data: bytes) -> int:
+  return unpack("<B", data)[0]
+
+def unpack_16(data: bytes) -> int:
+  return unpack("<H", data)[0]
+
+def unpack_16be(data: bytes) -> int:
+  return unpack(">H", data)[0]
+
+def unpack_32(data: bytes) -> int:
+  return unpack("<I", data)[0]
+
+def unpack_32be(data: bytes) -> int:
+  return unpack(">I", data)[0]
+
+def unpack_64(data: bytes) -> int:
+  return unpack("<Q", data)[0]
+
+def unpack_64be(data: bytes) -> int:
+  return unpack(">Q", data)[0]

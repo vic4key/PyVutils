@@ -1,13 +1,12 @@
-comtypes
+multipledispatch
+pywin32
 imutils
+opencv_python
+comtypes
 matplotlib
 mechanize
-multipledispatch
 numpy
-opencv_python
 pycaw
 pydicom
-pywin32
-requests
 scikit_learn
 win32security

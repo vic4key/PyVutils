@@ -24,6 +24,7 @@ __all__ =\
     "Text",
     "Thread",
     "Utils",
+    "Cache",
 ]
 
 import os
@@ -42,6 +43,7 @@ from .Process import *
 from .Text import *
 from .Thread import *
 from .Utils import *
+from .Cache import *
 
 if os.name == "nt":
     from .Sound import *
